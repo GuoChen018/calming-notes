@@ -39,11 +39,8 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   createNote: async () => {
     set({ isLoading: true, error: null });
     try {
-      console.log('Creating new note...');
       const note = await db.createNote();
-      console.log('Note created with ID:', note.id);
       const notes = await db.getAllNotes();
-      console.log('Loaded notes:', notes.length);
       set({ notes, currentNote: note, isLoading: false });
       return note.id;
     } catch (error) {

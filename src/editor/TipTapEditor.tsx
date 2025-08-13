@@ -33,6 +33,8 @@ export default function TipTapEditor({
         listItem: {
           nested: true,
         },
+        // Disable built-in link to avoid conflicts
+        link: false,
       }),
       TextStyle,
       Color,
