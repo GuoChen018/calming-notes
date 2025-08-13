@@ -1,6 +1,20 @@
 import * as SQLite from 'expo-sqlite';
 import { v4 as uuidv4 } from 'uuid';
 
+// Fallback UUID generation if crypto is not available
+function generateUUID(): string {
+  try {
+    return uuidv4();
+  } catch (error) {
+    // Fallback to timestamp + random number
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }) + '-' + Date.now();
+  }
+}
+
 export interface Note {
   id: string;
   content_json: string;
@@ -71,7 +85,7 @@ class DatabaseService {
 
     const now = Date.now();
     const note: Note = {
-      id: uuidv4(),
+      id: generateUUID(),
       content_json: contentJson || JSON.stringify({
         type: 'doc',
         content: [
