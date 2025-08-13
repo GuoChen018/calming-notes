@@ -1,0 +1,44 @@
+{
+  "name": "calming-notes-app",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~5.0.4",
+    "@tiptap/core": "^3.1.0",
+    "@tiptap/extension-blockquote": "^3.1.0",
+    "@tiptap/extension-bullet-list": "^3.1.0",
+    "@tiptap/extension-code-block": "^3.1.0",
+    "@tiptap/extension-color": "^3.1.0",
+    "@tiptap/extension-highlight": "^3.1.0",
+    "@tiptap/extension-link": "^3.1.0",
+    "@tiptap/extension-list-item": "^3.1.0",
+    "@tiptap/extension-ordered-list": "^3.1.0",
+    "@tiptap/extension-text-style": "^3.1.0",
+    "@tiptap/pm": "^3.1.0",
+    "@tiptap/react": "^3.1.0",
+    "@tiptap/starter-kit": "^3.1.0",
+    "@types/uuid": "^10.0.0",
+    "expo": "~53.0.20",
+    "expo-sqlite": "~15.2.14",
+    "expo-status-bar": "~2.2.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-native": "0.79.5",
+    "react-native-web": "^0.20.0",
+    "react-native-webview": "13.13.5",
+    "uuid": "^11.1.0",
+    "zustand": "^5.0.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~19.0.10",
+    "typescript": "~5.8.3"
+  },
+  "private": true
+}
