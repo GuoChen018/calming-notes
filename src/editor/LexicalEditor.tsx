@@ -6,7 +6,6 @@ import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
@@ -28,13 +27,17 @@ import { LinkNode, AutoLinkNode } from '@lexical/link';
 import { MarkNode } from '@lexical/mark';
 import { useEffect, useCallback, useState } from 'react';
 import { editorIcons } from './icons';
+import { Asset } from 'expo-asset';
 
 interface LexicalEditorProps {
   content?: string;
   onUpdate?: (content: string) => Promise<void>;
   onReady?: () => void;
+  keyboardDismissed?: boolean;
   dom?: import('expo/dom').DOMProps;
 }
+
+
 
 function ToolbarPlugin({ onReady }: { onReady?: () => void }) {
   const [editor] = useLexicalComposerContext();
@@ -69,14 +72,14 @@ function ToolbarPlugin({ onReady }: { onReady?: () => void }) {
   }, [editor, updateToolbar]);
 
   useEffect(() => {
-    // Notify parent that editor is ready
+    // Notify parent that editor is ready - only once when component mounts
     if (onReady) {
       const timer = setTimeout(() => {
         onReady();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [onReady]);
+  }, []); // Remove onReady from dependencies to prevent repeated calls
 
   const renderIcon = (iconName: keyof typeof editorIcons, isActive: boolean) => {
     const iconSvg = editorIcons[iconName];
@@ -170,46 +173,7 @@ function ToolbarPlugin({ onReady }: { onReady?: () => void }) {
         {renderIcon('link', isLink)}
       </button>
 
-      {/* Color and Highlight */}
-      <button
-        onClick={() => {
-          const color = window.prompt('Enter text color (hex, rgb, or name):', '#000000');
-          if (color) {
-            editor.update(() => {
-              const selection = $getSelection();
-              if ($isRangeSelection(selection)) {
-                selection.getNodes().forEach((node) => {
-                  node.setStyle(`color: ${color}`);
-                });
-              }
-            });
-          }
-        }}
-        className="toolbar-button"
-        title="Text Color"
-      >
-        {renderIcon('color', false)}
-      </button>
-
-      <button
-        onClick={() => {
-          const color = window.prompt('Enter highlight color (hex, rgb, or name):', '#ffff00');
-          if (color) {
-            editor.update(() => {
-              const selection = $getSelection();
-              if ($isRangeSelection(selection)) {
-                selection.getNodes().forEach((node) => {
-                  node.setStyle(`background-color: ${color}`);
-                });
-              }
-            });
-          }
-        }}
-        className="toolbar-button"
-        title="Highlight"
-      >
-        {renderIcon('highlighter', false)}
-      </button>
+      {/* Color and Highlight - Temporarily disabled for debugging */}
     </div>
   );
 }
@@ -303,8 +267,66 @@ function InitialContentPlugin({ content }: { content?: string }) {
 export default function LexicalEditor({ 
   content = '', 
   onUpdate,
-  onReady
+  onReady,
+  keyboardDismissed = false
 }: LexicalEditorProps) {
+  const [fontAssets, setFontAssets] = useState<{[key: string]: string}>({});
+
+  useEffect(() => {
+    // Load font assets
+    const loadFontAssets = async () => {
+      try {
+        const assets = await Asset.loadAsync([
+          require('../../assets/web-fonts/CommitMono-400-Regular.otf'),
+          require('../../assets/web-fonts/CommitMono-400-Italic.otf'),
+          require('../../assets/web-fonts/CommitMono-700-Regular.otf'),
+          require('../../assets/web-fonts/CommitMono-700-Italic.otf'),
+        ]);
+        
+        const fontURIs = {
+          regular: assets[0].localUri || assets[0].uri,
+          italic: assets[1].localUri || assets[1].uri,
+          bold: assets[2].localUri || assets[2].uri,
+          boldItalic: assets[3].localUri || assets[3].uri,
+        };
+        
+        console.log('Font assets loaded:', fontURIs);
+        setFontAssets(fontURIs);
+      } catch (error) {
+        console.error('Failed to load font assets:', error);
+      }
+    };
+
+    loadFontAssets();
+  }, []);
+
+  // Handle keyboard dismissal from React Native
+  useEffect(() => {
+    if (keyboardDismissed) {
+      console.log('DOM component received keyboard dismissal signal');
+      // Add to DOM immediately when component receives the signal
+      const script = document.createElement('script');
+      script.textContent = `
+        console.log('Script injected: Blurring editor');
+        const editorInput = document.querySelector('.editor-input');
+        if (editorInput && document.activeElement === editorInput) {
+          console.log('Found focused editor, blurring...');
+          editorInput.blur();
+          console.log('Editor blur completed');
+        } else {
+          console.log('Editor not focused or not found');
+        }
+      `;
+      document.head.appendChild(script);
+      
+      // Clean up script
+      setTimeout(() => {
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      }, 100);
+    }
+  }, [keyboardDismissed]);
   const initialConfig = {
     namespace: 'CalminNotesEditor',
     theme: {
@@ -351,33 +373,64 @@ export default function LexicalEditor({
   return (
     <div className="lexical-editor-container">
       <LexicalComposer initialConfig={initialConfig}>
-        <ToolbarPlugin onReady={onReady} />
-        <div 
-          className="editor-container"
-          onClick={() => {
-            const editorElement = document.querySelector('.editor-input');
-            if (editorElement) {
-              (editorElement as HTMLElement).focus();
-            }
-          }}
-        >
+        <div className="editor-container">
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<div className="editor-placeholder">Start writing...</div>}
+            placeholder={<div className="editor-placeholder"></div>}
             ErrorBoundary={() => <div>Something went wrong!</div>}
           />
           <HistoryPlugin />
-          <AutoFocusPlugin />
           <LinkPlugin />
           <ListPlugin />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <UpdatePlugin onUpdate={onUpdate} />
           <InitialContentPlugin content={content} />
         </div>
+        <ToolbarPlugin onReady={onReady} />
       </LexicalComposer>
 
       <style>{`
-        @import url('../../assets/fonts/CommitMono.css');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        
+        ${fontAssets.regular ? `
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('${fontAssets.regular}') format('opentype');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        ` : ''}
+        
+        ${fontAssets.italic ? `
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('${fontAssets.italic}') format('opentype');
+          font-weight: 400;
+          font-style: italic;
+          font-display: swap;
+        }
+        ` : ''}
+        
+        ${fontAssets.bold ? `
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('${fontAssets.bold}') format('opentype');
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+        ` : ''}
+        
+        ${fontAssets.boldItalic ? `
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('${fontAssets.boldItalic}') format('opentype');
+          font-weight: 700;
+          font-style: italic;
+          font-display: swap;
+        }
+        ` : ''}
         
         html, body {
           height: 100%;
@@ -389,7 +442,7 @@ export default function LexicalEditor({
           display: flex;
           flex-direction: column;
           height: 100vh;
-          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+          font-family: ${fontAssets.regular ? "'CommitMono'," : ""} 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .toolbar {
@@ -397,11 +450,14 @@ export default function LexicalEditor({
           flex-wrap: wrap;
           gap: 4px;
           padding: 8px;
-          border-bottom: 1px solid #E5E5E5;
+          border-top: 1px solid #E5E5E5;
           background: white;
-          position: sticky;
-          top: 0;
+          position: fixed;
+          bottom: 20px;
+          left: 0;
+          right: 0;
           z-index: 10;
+          transition: bottom 0.3s ease-in-out;
         }
 
         .toolbar-button {
@@ -429,9 +485,14 @@ export default function LexicalEditor({
           flex: 1;
           display: flex;
           flex-direction: column;
-          min-height: 100%;
+          min-height: calc(100vh - 80px); /* Account for toolbar */
           cursor: text;
+          position: relative;
+          width: 100%;
+          height: 100%;
         }
+        
+
 
         .editor-input {
           flex: 1;
@@ -439,9 +500,21 @@ export default function LexicalEditor({
           outline: none;
           font-size: 16px;
           line-height: 1.6;
-          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+          font-family: ${fontAssets.regular ? "'CommitMono'," : ""} 'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace !important;
           min-height: 100%;
+          width: 100%;
+          font-feature-settings: normal;
+          font-variant-ligatures: normal;
+          -webkit-user-select: text;
+          user-select: text;
+          -webkit-touch-callout: none;
+          -webkit-tap-highlight-color: transparent;
+          overflow-y: auto;
+          position: relative;
+          z-index: 2;
         }
+        
+
 
         .editor-placeholder {
           position: absolute;
@@ -520,6 +593,215 @@ export default function LexicalEditor({
           text-decoration: none;
         }
       `}</style>
+      
+      <script>{`
+        // Handle click-to-focus for entire editor area
+        document.addEventListener('DOMContentLoaded', () => {
+          const handleGlobalClick = (e) => {
+            const target = e.target;
+            const editorContainer = document.querySelector('.lexical-editor-container');
+            const toolbar = document.querySelector('.toolbar');
+            const editorInput = document.querySelector('.editor-input');
+            
+            // Check if click is within editor area but not on toolbar or buttons
+            if (editorContainer && editorContainer.contains(target) && 
+                !toolbar.contains(target) && 
+                !target.closest('button')) {
+              
+              console.log('Editor area clicked, focusing...', target.className, target.tagName);
+              
+              if (editorInput) {
+                // Always focus the editor
+                editorInput.focus();
+                
+                // Check if we clicked in empty space (not directly on text)
+                const rect = editorInput.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const clickY = e.clientY - rect.top;
+                
+                // Create a temporary element to test if we're in empty space
+                const tempElement = document.elementFromPoint(e.clientX, e.clientY);
+                const isEmptySpace = tempElement === editorInput || 
+                                   tempElement === editorContainer ||
+                                   tempElement.classList.contains('editor-container') ||
+                                   tempElement.classList.contains('editor-input');
+                
+                if (isEmptySpace) {
+                  console.log('Clicked in empty space, moving cursor to end');
+                  // Move cursor to end of content
+                  setTimeout(() => {
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    
+                    // Find the last text node
+                    const walker = document.createTreeWalker(
+                      editorInput,
+                      NodeFilter.SHOW_TEXT,
+                      null,
+                      false
+                    );
+                    
+                    let lastTextNode = null;
+                    let node;
+                    while (node = walker.nextNode()) {
+                      lastTextNode = node;
+                    }
+                    
+                    if (lastTextNode) {
+                      range.setStart(lastTextNode, lastTextNode.textContent.length);
+                      range.setEnd(lastTextNode, lastTextNode.textContent.length);
+                    } else {
+                      range.setStart(editorInput, 0);
+                      range.setEnd(editorInput, 0);
+                    }
+                    
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                  }, 50);
+                }
+              }
+            }
+          };
+          
+          document.addEventListener('click', handleGlobalClick, true);
+        });
+        
+        // Handle keyboard visibility and toolbar positioning
+        let keyboardHeight = 0;
+        const baseToolbarBottom = 20; // Base position from bottom
+        
+        function updateToolbarPosition() {
+          const toolbar = document.querySelector('.toolbar');
+          if (toolbar) {
+            const newBottom = baseToolbarBottom + keyboardHeight;
+            toolbar.style.bottom = newBottom + 'px';
+            console.log('Toolbar moved to:', newBottom + 'px', 'keyboard height:', keyboardHeight);
+          }
+        }
+        
+        // Listen for viewport changes (keyboard appearance)
+        function handleViewportChange() {
+          const visualViewport = window.visualViewport;
+          if (visualViewport) {
+            const currentKeyboardHeight = window.innerHeight - visualViewport.height;
+            if (Math.abs(currentKeyboardHeight - keyboardHeight) > 10) { // Only update if significant change
+              keyboardHeight = Math.max(0, currentKeyboardHeight);
+              updateToolbarPosition();
+            }
+          }
+        }
+        
+        // Set up keyboard detection
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', handleViewportChange);
+          window.visualViewport.addEventListener('scroll', handleViewportChange);
+        }
+        
+        // Fallback for older browsers
+        let initialHeight = window.innerHeight;
+        window.addEventListener('resize', () => {
+          const currentHeight = window.innerHeight;
+          const newKeyboardHeight = Math.max(0, initialHeight - currentHeight);
+          if (Math.abs(newKeyboardHeight - keyboardHeight) > 10) {
+            keyboardHeight = newKeyboardHeight;
+            updateToolbarPosition();
+          }
+        });
+        
+        // Listen for input focus to trigger keyboard detection
+        document.addEventListener('focusin', (e) => {
+          if (e.target && e.target.closest('.editor-input')) {
+            setTimeout(handleViewportChange, 300);
+          }
+        });
+        
+        document.addEventListener('focusout', (e) => {
+          if (e.target && e.target.closest('.editor-input')) {
+            setTimeout(() => {
+              keyboardHeight = 0;
+              updateToolbarPosition();
+            }, 300);
+          }
+        });
+        
+        // Enhanced keyboard dismissal detection for Android
+        let lastViewportHeight = window.innerHeight;
+        let lastVisualViewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        let keyboardWasVisible = false;
+        let isKeyboardVisible = false;
+        
+        function detectKeyboardState() {
+          const windowHeight = window.innerHeight;
+          const visualHeight = window.visualViewport ? window.visualViewport.height : windowHeight;
+          const heightDiff = windowHeight - visualHeight;
+          
+          console.log('Height check - Window:', windowHeight, 'Visual:', visualHeight, 'Diff:', heightDiff, 'Was visible:', keyboardWasVisible);
+          
+          // Keyboard is visible if there's a significant height difference
+          const keyboardCurrentlyVisible = heightDiff > 100;
+          
+          if (keyboardCurrentlyVisible && !isKeyboardVisible) {
+            // Keyboard just appeared
+            console.log('Keyboard appeared');
+            isKeyboardVisible = true;
+            keyboardWasVisible = true;
+          } else if (!keyboardCurrentlyVisible && isKeyboardVisible) {
+            // Keyboard just disappeared
+            console.log('Keyboard disappeared - blurring editor');
+            const editorInput = document.querySelector('.editor-input');
+            if (editorInput && document.activeElement === editorInput) {
+              editorInput.blur();
+            }
+            isKeyboardVisible = false;
+            keyboardHeight = 0;
+            updateToolbarPosition();
+          }
+          
+          // Update keyboard height for toolbar positioning
+          if (keyboardCurrentlyVisible) {
+            keyboardHeight = heightDiff;
+            updateToolbarPosition();
+          }
+        }
+        
+        // Set up multiple detection methods
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', detectKeyboardState);
+          window.visualViewport.addEventListener('scroll', detectKeyboardState);
+        }
+        window.addEventListener('resize', detectKeyboardState);
+        
+        // Also try using orientation change as a trigger
+        window.addEventListener('orientationchange', () => {
+          setTimeout(detectKeyboardState, 500);
+        });
+        
+        // Page visibility change detection (Android back gesture sometimes triggers this)
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            setTimeout(detectKeyboardState, 100);
+          }
+        });
+        
+        // Listen for messages from React Native (keyboard dismissal)
+        window.addEventListener('message', (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'BLUR_EDITOR') {
+              console.log('Received BLUR_EDITOR message from React Native');
+              const editorInput = document.querySelector('.editor-input');
+              if (editorInput && document.activeElement === editorInput) {
+                editorInput.blur();
+                keyboardHeight = 0;
+                updateToolbarPosition();
+              }
+            }
+          } catch (e) {
+            // Ignore non-JSON messages
+          }
+        });
+      `}</script>
+
     </div>
   );
 }
