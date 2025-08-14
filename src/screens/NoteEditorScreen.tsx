@@ -60,12 +60,15 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   // Fade in animation when note loads
   useEffect(() => {
-    if (currentNote && !isLoading) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+    if (currentNote && currentNote.content_json && !isLoading) {
+      // Small delay to ensure TipTap has initialized with correct content
+      setTimeout(() => {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+      }, 150);
     }
   }, [currentNote, isLoading, fadeAnim]);
 
@@ -223,14 +226,20 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
       {/* Editor */}
       <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
-        <TipTapEditor
-          content={currentNote.content_json}
-          onUpdate={handleContentChange}
-          dom={{
-            matchContents: true,
-            style: styles.editor,
-          }}
-        />
+        {currentNote && currentNote.content_json ? (
+          <TipTapEditor
+            content={currentNote.content_json}
+            onUpdate={handleContentChange}
+            dom={{
+              matchContents: true,
+              style: styles.editor,
+            }}
+          />
+        ) : (
+          <View style={styles.editorPlaceholder}>
+            <ActivityIndicator size="small" color={colors.accent.primary} />
+          </View>
+        )}
       </Animated.View>
     </View>
   );
@@ -290,6 +299,11 @@ const styles = StyleSheet.create({
   },
   editor: {
     flex: 1,
+  },
+  editorPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
