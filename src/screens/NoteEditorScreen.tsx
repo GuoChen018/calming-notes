@@ -180,13 +180,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   }
 
   return (
-    <Animated.View style={[
-      styles.container, 
-      { 
-        backgroundColor: colors.background,
-        opacity: fadeAnim,
-      }
-    ]}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
@@ -228,7 +222,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       </View>
 
       {/* Editor */}
-      <View style={styles.editorContainer}>
+      <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
         <TipTapEditor
           content={currentNote.content_json}
           onUpdate={handleContentChange}
@@ -237,8 +231,8 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
             style: styles.editor,
           }}
         />
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </View>
   );
 }
 
