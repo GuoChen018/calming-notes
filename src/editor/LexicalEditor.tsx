@@ -421,6 +421,8 @@ export default function LexicalEditor({
           flex: 1;
           display: flex;
           flex-direction: column;
+          min-height: 100%;
+          cursor: text;
         }
 
         .editor-input {
@@ -430,6 +432,7 @@ export default function LexicalEditor({
           font-size: 16px;
           line-height: 1.6;
           font-family: inherit;
+          min-height: 100%;
         }
 
         .editor-placeholder {
