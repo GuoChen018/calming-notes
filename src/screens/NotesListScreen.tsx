@@ -33,10 +33,6 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const { toggleTheme } = useSettingsStore();
   const { colors, typography, fontSize, isDark } = useTheme();
-  
-  // Debug: Log font family being used
-  console.log('Typography fonts:', typography.fonts);
-  console.log('Regular font:', typography.fonts.regular);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -150,7 +146,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           </Text>
         </TouchableOpacity>
         <Text style={[styles.title, { 
-          fontFamily: typography.fonts.regular, 
+          fontFamily: typography.fonts.bold, 
           color: colors.text.primary 
         }]}>
           Notes
@@ -228,7 +224,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
   },
