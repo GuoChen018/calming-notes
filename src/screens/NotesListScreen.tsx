@@ -181,12 +181,13 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           </View>
 
           {/* Notes List */}
-          {notes.map((item) => (
+          {notes.map((item, index) => (
             <TouchableOpacity
               key={item.id}
               style={[styles.noteItem, { 
                 backgroundColor: colors.background,
-                borderBottomColor: colors.border.light 
+                borderBottomColor: colors.border.light,
+                borderBottomWidth: index === notes.length - 1 ? 0 : 1,
               }]}
               onPress={() => onNotePress(item.id)}
               onLongPress={() => handleDeleteNote(item.id, item.preview)}
@@ -290,6 +291,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderBottomWidth: 1,
+    textAlign: 'left',
   },
   list: {
     flex: 1,
@@ -297,7 +299,6 @@ const styles = StyleSheet.create({
   noteItem: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
   },
   noteContent: {
     flex: 1,
