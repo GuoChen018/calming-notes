@@ -377,10 +377,16 @@ export default function LexicalEditor({
       </LexicalComposer>
 
       <style>{`
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        
         .lexical-editor-container {
           display: flex;
           flex-direction: column;
-          height: 100%;
+          height: 100vh;
           font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 

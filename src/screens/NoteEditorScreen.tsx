@@ -204,7 +204,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
             onReady={handleEditorReady}
             dom={{
               matchContents: true,
-              style: styles.editor,
+              style: [styles.editor, { height: '100%' }],
             }}
           />
         ) : (
