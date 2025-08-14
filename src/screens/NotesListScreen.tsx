@@ -140,7 +140,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
+      <View style={[styles.header, { backgroundColor: colors.surface }]}>
         <Text style={[styles.title, { 
           fontFamily: typography.fonts.bold, 
           color: colors.text.primary 
@@ -156,49 +156,52 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         </TouchableOpacity>
       </View>
 
-      {/* Search */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
-        <TextInput
-          style={[styles.searchInput, { 
-            borderColor: colors.border.light,
-            backgroundColor: colors.surface,
-            color: colors.text.primary,
-            fontFamily: typography.fonts.regular,
-            fontSize: fontSize,
-          }]}
-          placeholder="Search notes..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-          placeholderTextColor={colors.text.muted}
+      {/* Search and Notes Container */}
+      <View style={[styles.contentContainer, { backgroundColor: colors.surface }]}>
+        {/* Search */}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={[styles.searchInput, { 
+              borderColor: colors.border.light,
+              backgroundColor: colors.surface,
+              color: colors.text.primary,
+              fontFamily: typography.fonts.regular,
+              fontSize: fontSize,
+            }]}
+            placeholder="Search notes..."
+            value={searchQuery}
+            onChangeText={handleSearch}
+            placeholderTextColor={colors.text.muted}
+          />
+        </View>
+
+        {/* Notes List */}
+        <FlatList
+          data={notes}
+          renderItem={renderNoteItem}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+          contentContainerStyle={notes.length === 0 ? styles.emptyContainer : undefined}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Text style={[styles.emptyText, { 
+                fontFamily: typography.fonts.regular,
+                color: colors.text.secondary 
+              }]}>
+                {searchQuery ? 'No notes found' : 'No notes yet'}
+              </Text>
+              {!searchQuery && (
+                <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+                  <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          }
         />
       </View>
-
-      {/* Notes List */}
-      <FlatList
-        data={notes}
-        renderItem={renderNoteItem}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
-        contentContainerStyle={notes.length === 0 ? styles.emptyContainer : undefined}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { 
-              fontFamily: typography.fonts.regular,
-              color: colors.text.secondary 
-            }]}>
-              {searchQuery ? 'No notes found' : 'No notes yet'}
-            </Text>
-            {!searchQuery && (
-              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        }
-      />
       
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
@@ -219,7 +222,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    borderBottomWidth: 1,
+  },
+  contentContainer: {
+    flex: 1,
   },
   themeButton: {
     padding: 8,
