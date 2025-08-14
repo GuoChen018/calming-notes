@@ -57,26 +57,52 @@ class DatabaseService {
     try {
       const content = JSON.parse(contentJson);
       
-      // Extract text from TipTap JSON structure
-      const extractText = (node: any): string => {
-        if (node.type === 'text') {
-          return node.text || '';
-        }
-        
-        if (node.content && Array.isArray(node.content)) {
-          return node.content.map(extractText).join('');
-        }
-        
-        return '';
-      };
+      // Check if this is Lexical format (has 'root' and 'children')
+      if (content.root && content.root.children) {
+        return this.extractLexicalText(content.root);
+      }
       
-      const text = extractText(content);
+      // Check if this is TipTap format (has 'type' and 'content')
+      if (content.type && content.content) {
+        return this.extractTipTapText(content);
+      }
       
-      // Return first 100 characters, trimmed
-      return text.slice(0, 100).trim() || 'Untitled Note';
+      // Fallback for plain text
+      return String(content).slice(0, 100).trim() || 'Untitled Note';
     } catch {
       return 'Untitled Note';
     }
+  }
+
+  private extractLexicalText(node: any): string {
+    let text = '';
+    
+    if (node.type === 'text') {
+      return node.text || '';
+    }
+    
+    if (node.children && Array.isArray(node.children)) {
+      text = node.children.map((child: any) => this.extractLexicalText(child)).join('');
+    }
+    
+    // Add spacing for block elements
+    if (node.type === 'paragraph' || node.type === 'heading') {
+      text = text + ' ';
+    }
+    
+    return text.slice(0, 100).trim() || 'Untitled Note';
+  }
+
+  private extractTipTapText(node: any): string {
+    if (node.type === 'text') {
+      return node.text || '';
+    }
+    
+    if (node.content && Array.isArray(node.content)) {
+      return node.content.map((child: any) => this.extractTipTapText(child)).join('');
+    }
+    
+    return '';
   }
 
   async createNote(contentJson: string = ''): Promise<Note> {
