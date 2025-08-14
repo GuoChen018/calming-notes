@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -38,10 +39,21 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const searchInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     loadNotes();
   }, [loadNotes]);
+
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      searchInputRef.current?.blur();
+    });
+
+    return () => {
+      keyboardDidHideListener?.remove();
+    };
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -165,19 +177,28 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         }]}>
           {/* Search */}
           <View style={styles.searchContainer}>
-            <TextInput
-              style={[styles.searchInput, { 
-                backgroundColor: colors.surface,
-                color: colors.text.primary,
-                fontFamily: typography.fonts.regular,
-                fontSize: fontSize,
-                borderBottomColor: colors.border.light,
-              }]}
-              placeholder="Search notes..."
-              value={searchQuery}
-              onChangeText={handleSearch}
-              placeholderTextColor={colors.text.muted}
-            />
+            <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
+              <View style={styles.searchIcon}>
+                <Icon 
+                  name="search" 
+                  size={16} 
+                  color="#A2ADC2" 
+                />
+              </View>
+              <TextInput
+                ref={searchInputRef}
+                style={[styles.searchInput, { 
+                  backgroundColor: colors.surface,
+                  color: colors.text.primary,
+                  fontFamily: typography.fonts.regular,
+                  fontSize: fontSize,
+                }]}
+                placeholder="Search note"
+                value={searchQuery}
+                onChangeText={handleSearch}
+                placeholderTextColor="#A2ADC2"
+              />
+            </View>
           </View>
 
           {/* Notes List */}
@@ -213,6 +234,13 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           
           {notes.length === 0 && (
             <View style={styles.emptyState}>
+              {searchQuery && (
+                <Icon 
+                  name="cat" 
+                  size={100} 
+                  color="#A2ADC2" 
+                />
+              )}
               <Text style={[styles.emptyText, { 
                 fontFamily: typography.fonts.regular,
                 color: colors.text.secondary 
@@ -254,7 +282,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 20,
     borderWidth: 1,
   },
@@ -285,12 +313,20 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   searchContainer: {
-    paddingVertical: 12,
+    paddingVertical: 0,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderBottomWidth: 1,
+  },
+  searchIcon: {
+    marginRight: 12,
   },
   searchInput: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
+    flex: 1,
     textAlign: 'left',
   },
   list: {
@@ -318,11 +354,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
+    paddingVertical: 40,
   },
   emptyText: {
     fontSize: 18,
     textAlign: 'center',
-    marginBottom: 20,
+    marginTop: 8,
   },
   createFirstButton: {
     paddingHorizontal: 24,

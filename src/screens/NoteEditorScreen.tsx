@@ -7,8 +7,9 @@ import {
   Alert,
   ActivityIndicator,
   Animated,
+  Keyboard,
 } from 'react-native';
-import TipTapEditor from '../editor/TipTapEditor';
+import LexicalEditor from '../editor/LexicalEditor';
 import { useNotesStore } from '../store/notesStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { useTheme } from '../hooks/useTheme';
@@ -25,6 +26,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     isLoading,
     error,
     loadNote,
+    loadNotes,
     updateNote,
     deleteNote,
     clearError,
@@ -32,6 +34,8 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   const { colors, typography } = useTheme();
   const [editorReady, setEditorReady] = useState(false);
+  const [keyboardDismissed, setKeyboardDismissed] = useState(false);
+  const editorRef = useRef<any>(null);
   
   // Animation for smooth fade-in
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -73,12 +77,33 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     }
   }, [editorReady, fadeAnim]);
 
+  // Handle keyboard dismissal
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      console.log('React Native detected keyboard dismissal');
+      // Set state that will be passed to DOM component
+      setKeyboardDismissed(true);
+      // Reset after a short delay
+      setTimeout(() => setKeyboardDismissed(false), 100);
+    });
+
+    return () => {
+      keyboardDidHideListener?.remove();
+    };
+  }, []);
+
   const handleEditorReady = () => {
     setEditorReady(true);
   };
 
   const handleContentChange = async (content: string) => {
     debouncedSave(content);
+  };
+
+  const handleBack = () => {
+    // Refresh notes list to show updated previews
+    loadNotes();
+    onBack();
   };
 
   const handleDelete = () => {
@@ -93,7 +118,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
           onPress: async () => {
             try {
               await deleteNote(noteId);
-              onBack();
+              handleBack();
             } catch (error) {
               Alert.alert('Error', 'Failed to delete note');
             }
@@ -174,12 +199,12 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <View style={styles.buttonContent}>
-            <Icon name="arrow-left" size={16} color={colors.accent.primary} />
+            <Icon name="arrow-left" size={16} color="#4D5461" />
             <Text style={[styles.backButtonText, { 
               fontFamily: typography.fonts.regular,
-              color: colors.accent.primary 
+              color: "#4D5461" 
             }]}>
               Back
             </Text>
@@ -198,13 +223,14 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       {/* Editor */}
       <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
         {currentNote && currentNote.content_json ? (
-          <TipTapEditor
+          <LexicalEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}
             onReady={handleEditorReady}
+            keyboardDismissed={keyboardDismissed}
             dom={{
               matchContents: true,
-              style: styles.editor,
+              style: [styles.editor, { height: '100%' }],
             }}
           />
         ) : (

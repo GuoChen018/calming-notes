@@ -18,6 +18,7 @@ import NumberedListIcon from '../../assets/icons/numbered-list.svg';
 import QuoteIcon from '../../assets/icons/quote.svg';
 import ColorIcon from '../../assets/icons/color.svg';
 import HighlighterIcon from '../../assets/icons/highlighter.svg';
+import CatIcon from '../../assets/icons/cat.svg';
 
 interface IconProps {
   name: string;
@@ -44,6 +45,7 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     quote: QuoteIcon,
     color: ColorIcon,
     highlighter: HighlighterIcon,
+    cat: CatIcon,
   };
 
   const IconComponent = iconComponents[name];

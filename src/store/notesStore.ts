@@ -74,21 +74,18 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     try {
       await db.updateNote(id, content);
       
-      // Update current note if it's the one being edited
+      // Only update current note silently without triggering re-renders
+      // that could affect editor focus
       const currentNote = get().currentNote;
       if (currentNote && currentNote.id === id) {
-        set({ 
-          currentNote: { 
-            ...currentNote, 
-            content_json: content, 
-            updated_at: Date.now() 
-          } 
-        });
+        // Update the note object directly without calling set()
+        // This prevents unnecessary re-renders during auto-save
+        currentNote.content_json = content;
+        currentNote.updated_at = Date.now();
       }
       
-      // Refresh notes list to update preview
-      const notes = await db.getAllNotes();
-      set({ notes });
+      // Don't refresh notes list during auto-save to prevent focus loss
+      // The list will be refreshed when the user navigates back
     } catch (error) {
       set({ 
         error: error instanceof Error ? error.message : 'Failed to update note'
