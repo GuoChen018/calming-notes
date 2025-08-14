@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Animated,
 } from 'react-native';
-import TipTapEditor from '../editor/TipTapEditor';
+import LexicalEditor from '../editor/LexicalEditor';
 import { useNotesStore } from '../store/notesStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { useTheme } from '../hooks/useTheme';
@@ -198,7 +198,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       {/* Editor */}
       <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
         {currentNote && currentNote.content_json ? (
-          <TipTapEditor
+          <LexicalEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}
             onReady={handleEditorReady}
