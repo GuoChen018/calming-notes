@@ -93,7 +93,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const renderNoteItem = ({ item }: { item: NotePreview }) => (
     <TouchableOpacity
-      style={[styles.noteItem, { backgroundColor: colors.surface }]}
+      style={[styles.noteItem, { 
+        backgroundColor: colors.background,
+        borderBottomColor: colors.border.light 
+      }]}
       onPress={() => onNotePress(item.id)}
       onLongPress={() => handleDeleteNote(item.id, item.preview)}
     >
@@ -154,10 +157,11 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       </View>
 
       {/* Search */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
+      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
         <TextInput
           style={[styles.searchInput, { 
-            backgroundColor: colors.surfaceSecondary,
+            borderColor: colors.border.light,
+            backgroundColor: colors.surface,
             color: colors.text.primary,
             fontFamily: typography.fonts.regular,
             fontSize: fontSize,
@@ -246,10 +250,9 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    borderBottomWidth: 1,
   },
   searchInput: {
-    borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
@@ -257,15 +260,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   noteItem: {
-    marginHorizontal: 16,
-    marginVertical: 4,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
   },
   noteContent: {
     flex: 1,

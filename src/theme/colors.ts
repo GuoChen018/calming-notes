@@ -20,7 +20,7 @@ export const colors = {
     },
     
     border: {
-      light: '#e2e8f0',
+      light: '#E5E5E5',
       medium: '#cbd5e0',
       dark: '#a0aec0',
     },
