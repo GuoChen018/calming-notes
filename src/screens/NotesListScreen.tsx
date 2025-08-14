@@ -164,7 +164,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           borderColor: colors.border.light 
         }]}>
           {/* Search */}
-          <View style={styles.searchContainer}>
+          <View style={[styles.searchContainer, { borderBottomColor: colors.border.light }]}>
             <TextInput
               style={[styles.searchInput, { 
                 backgroundColor: colors.surface,
@@ -245,13 +245,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   scrollContainer: {
     flex: 1,
   },
   contentContainer: {
-    margin: 20,
+    marginHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 20,
     borderWidth: 1,
   },
   themeButton: {
@@ -281,7 +283,8 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   searchContainer: {
-    paddingVertical: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
   },
   searchInput: {
     paddingHorizontal: 20,
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
   },
   noteItem: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
   },
   noteContent: {
