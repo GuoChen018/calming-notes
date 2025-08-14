@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 20,
-    marginTop: 20,
+    marginTop: 8,
   },
   createFirstButton: {
     paddingHorizontal: 24,
