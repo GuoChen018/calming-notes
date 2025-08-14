@@ -341,12 +341,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
-    paddingTop: 60,
+    paddingVertical: 40,
   },
   emptyText: {
     fontSize: 18,
     textAlign: 'center',
-    marginBottom: 20,
     marginTop: 8,
   },
   createFirstButton: {
