@@ -138,25 +138,27 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
-        <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
-          <Icon 
-            name={isDark ? 'sun' : 'moon'} 
-            size={20} 
-            color={colors.text.secondary} 
-          />
-        </TouchableOpacity>
         <Text style={[styles.title, { 
           fontFamily: typography.fonts.bold, 
           color: colors.text.primary 
         }]}>
           Notes
         </Text>
-        <TouchableOpacity style={[styles.newButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-          <View style={styles.buttonContent}>
-            <Icon name="add" size={16} color="#fff" />
-            <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>New</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.headerRightSection}>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
+            <Icon 
+              name={isDark ? 'sun' : 'moon'} 
+              size={20} 
+              color={colors.text.secondary} 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.newButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+            <View style={styles.buttonContent}>
+              <Icon name="add" size={16} color="#fff" />
+              <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>New</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Search */}
@@ -227,8 +229,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    flex: 1,
-    textAlign: 'center',
+  },
+  headerRightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   newButton: {
     paddingHorizontal: 16,
