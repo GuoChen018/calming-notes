@@ -352,7 +352,15 @@ export default function LexicalEditor({
     <div className="lexical-editor-container">
       <LexicalComposer initialConfig={initialConfig}>
         <ToolbarPlugin onReady={onReady} />
-        <div className="editor-container">
+        <div 
+          className="editor-container"
+          onClick={() => {
+            const editorElement = document.querySelector('.editor-input');
+            if (editorElement) {
+              (editorElement as HTMLElement).focus();
+            }
+          }}
+        >
           <RichTextPlugin
             contentEditable={<ContentEditable className="editor-input" />}
             placeholder={<div className="editor-placeholder">Start writing...</div>}
