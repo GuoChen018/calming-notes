@@ -157,12 +157,14 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       </View>
 
       {/* Search and Notes Container */}
-      <View style={[styles.contentContainer, { backgroundColor: colors.surface }]}>
+      <View style={[styles.contentContainer, { 
+        backgroundColor: colors.surface,
+        borderColor: colors.border.light 
+      }]}>
         {/* Search */}
         <View style={styles.searchContainer}>
           <TextInput
             style={[styles.searchInput, { 
-              borderColor: colors.border.light,
               backgroundColor: colors.surface,
               color: colors.text.primary,
               fontFamily: typography.fonts.regular,
@@ -225,6 +227,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    margin: 20,
+    borderWidth: 1,
   },
   themeButton: {
     padding: 8,
@@ -257,7 +261,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   searchInput: {
-    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
