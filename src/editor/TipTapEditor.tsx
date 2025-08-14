@@ -152,31 +152,24 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`p-2 rounded ${
             editor.isActive('strike') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Strikethrough"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M16 4H9a3 3 0 0 0-2.83 4" stroke="currentColor" strokeWidth="2"/>
-            <path d="M14 12a4 4 0 0 1 0 8H6" stroke="currentColor" strokeWidth="2"/>
-            <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          {renderIcon('strikethrough', editor.isActive('strike'))}
         </button>
 
         <button
           onClick={() => editor.chain().focus().toggleCode().run()}
           className={`p-2 rounded ${
             editor.isActive('code') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Inline Code"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <polyline points="16,18 22,12 16,6" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <polyline points="8,6 2,12 8,18" stroke="currentColor" strokeWidth="2" fill="none"/>
-          </svg>
+          {renderIcon('code', editor.isActive('code'))}
         </button>
 
         {/* Lists */}
@@ -196,19 +189,12 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`p-2 rounded ${
             editor.isActive('orderedList') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Numbered List"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <line x1="10" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2"/>
-            <line x1="10" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2"/>
-            <line x1="10" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="2"/>
-            <path d="M4 6h1v4" stroke="currentColor" strokeWidth="2"/>
-            <path d="M4 10h2" stroke="currentColor" strokeWidth="2"/>
-            <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          {renderIcon('numberedList', editor.isActive('orderedList'))}
         </button>
 
         {/* Quote */}
@@ -216,15 +202,12 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`p-2 rounded ${
             editor.isActive('blockquote') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Quote"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" stroke="currentColor" strokeWidth="2"/>
-            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          {renderIcon('quote', editor.isActive('blockquote'))}
         </button>
 
         {/* Link */}
@@ -232,31 +215,49 @@ export default function TipTapEditor({
           onClick={setLink}
           className={`p-2 rounded ${
             editor.isActive('link') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Link"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72" stroke="currentColor" strokeWidth="2"/>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72" stroke="currentColor" strokeWidth="2"/>
-          </svg>
+          {renderIcon('link', editor.isActive('link'))}
         </button>
 
         {/* Colors */}
         <div className="flex gap-1">
-          <input
-            type="color"
-            onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
-            className="w-8 h-8 rounded border border-gray-300"
+          <button
+            onClick={() => {
+              const color = window.prompt('Enter text color (hex, rgb, or name):', editor.getAttributes('textStyle').color || '#000000');
+              if (color) {
+                editor.chain().focus().setColor(color).run();
+              }
+            }}
+            className={`p-2 rounded ${
+              editor.getAttributes('textStyle').color 
+                ? 'bg-blue-500' 
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
             title="Text Color"
-          />
-          <input
-            type="color"
-            onChange={(e) => editor.chain().focus().setHighlight({ color: e.target.value }).run()}
-            className="w-8 h-8 rounded border border-gray-300"
-            title="Highlight Color"
-          />
+          >
+            {renderIcon('color', !!editor.getAttributes('textStyle').color)}
+          </button>
+          
+          <button
+            onClick={() => {
+              const color = window.prompt('Enter highlight color (hex, rgb, or name):', '#ffff00');
+              if (color) {
+                editor.chain().focus().toggleHighlight({ color }).run();
+              }
+            }}
+            className={`p-2 rounded ${
+              editor.isActive('highlight') 
+                ? 'bg-blue-500' 
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            title="Highlight"
+          >
+            {renderIcon('highlighter', editor.isActive('highlight'))}
+          </button>
         </div>
       </div>
 
