@@ -144,21 +144,13 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         }]}>
           Notes
         </Text>
-        <View style={styles.headerRightSection}>
-          <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
-            <Icon 
-              name={isDark ? 'sun' : 'moon'} 
-              size={20} 
-              color={colors.text.secondary} 
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.newButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-            <View style={styles.buttonContent}>
-              <Icon name="add" size={16} color="#fff" />
-              <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>New</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
+          <Icon 
+            name={isDark ? 'sun' : 'moon'} 
+            size={20} 
+            color={colors.text.secondary} 
+          />
+        </TouchableOpacity>
       </View>
 
       {/* Search */}
@@ -203,6 +195,11 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           </View>
         }
       />
+      
+      {/* Floating Action Button */}
+      <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
+        <Icon name="add" size={24} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -230,25 +227,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
   },
-  headerRightSection: {
-    flexDirection: 'row',
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    backgroundColor: '#4D5461',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
-  },
-  newButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  newButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   searchContainer: {
     paddingHorizontal: 20,
