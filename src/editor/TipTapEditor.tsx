@@ -7,6 +7,7 @@ import Color from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import Link from '@tiptap/extension-link';
 import { useEffect, useCallback } from 'react';
+import { editorIcons } from './icons';
 
 interface TipTapEditorProps {
   content?: string;
@@ -90,6 +91,18 @@ export default function TipTapEditor({
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }, [editor]);
 
+  const renderIcon = (iconName: keyof typeof editorIcons, isActive: boolean) => {
+    const iconSvg = editorIcons[iconName];
+    const color = isActive ? '#fff' : '#697180';
+    return (
+      <div 
+        dangerouslySetInnerHTML={{ 
+          __html: iconSvg.replace(/currentColor/g, color) 
+        }} 
+      />
+    );
+  };
+
   if (!editor) {
     return <div>Loading editor...</div>;
   }
@@ -108,21 +121,7 @@ export default function TipTapEditor({
           }`}
           title="Bold"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <g clipPath="url(#clip0_35_677)">
-              <rect x="5" y="4" width="2" height="18" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-              <rect x="17" y="13" width="2" height="5" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-              <rect x="17" y="6" width="2" height="5" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-              <rect x="5" y="6" width="2" height="12" transform="rotate(-90 5 6)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-              <rect x="5" y="13" width="2" height="12" transform="rotate(-90 5 13)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-              <rect x="5" y="20" width="2" height="12" transform="rotate(-90 5 20)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
-            </g>
-            <defs>
-              <clipPath id="clip0_35_677">
-                <rect width="14" height="16" fill="white" transform="translate(5 4)"/>
-              </clipPath>
-            </defs>
-          </svg>
+          {renderIcon('bold', editor.isActive('bold'))}
         </button>
         
         <button
@@ -134,20 +133,7 @@ export default function TipTapEditor({
           }`}
           title="Italic"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <g clipPath="url(#clip0_35_714)">
-              <rect x="8" y="6" width="2" height="12" transform="rotate(-90 8 6)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
-              <rect x="13" y="10" width="4" height="2" transform="rotate(-90 13 10)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
-              <rect x="11" y="14" width="4" height="2" transform="rotate(-90 11 14)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
-              <rect x="9" y="18" width="4" height="2" transform="rotate(-90 9 18)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
-              <rect x="4" y="20" width="2" height="12" transform="rotate(-90 4 20)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
-            </g>
-            <defs>
-              <clipPath id="clip0_35_714">
-                <rect width="18" height="16" fill="white" transform="translate(3 4)"/>
-              </clipPath>
-            </defs>
-          </svg>
+          {renderIcon('italic', editor.isActive('italic'))}
         </button>
 
         <button
@@ -159,19 +145,7 @@ export default function TipTapEditor({
           }`}
           title="Underline"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <g clipPath="url(#clip0_35_686)">
-              <rect x="5" y="14" width="10" height="2" transform="rotate(-90 5 14)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
-              <rect x="7" y="16" width="2" height="10" transform="rotate(-90 7 16)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
-              <rect x="5" y="20" width="2" height="14" transform="rotate(-90 5 20)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
-              <rect x="17" y="14" width="10" height="2" transform="rotate(-90 17 14)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
-            </g>
-            <defs>
-              <clipPath id="clip0_35_686">
-                <rect width="14" height="16" fill="white" transform="translate(5 4)"/>
-              </clipPath>
-            </defs>
-          </svg>
+          {renderIcon('underline', editor.isActive('underline'))}
         </button>
 
         <button
@@ -215,9 +189,7 @@ export default function TipTapEditor({
           }`}
           title="Bullet List"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M6 18H4V16H6V18ZM20 18H8V16H20V18ZM6 13H4V11H6V13ZM20 13H8V11H20V13ZM6 8H4V6H6V8ZM20 8H8V6H20V8Z" fill={editor.isActive('bulletList') ? '#fff' : '#697180'}/>
-          </svg>
+          {renderIcon('list', editor.isActive('bulletList'))}
         </button>
 
         <button
