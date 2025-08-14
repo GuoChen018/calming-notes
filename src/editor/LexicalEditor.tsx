@@ -377,6 +377,8 @@ export default function LexicalEditor({
       </LexicalComposer>
 
       <style>{`
+        @import url('../../assets/fonts/CommitMono.css');
+        
         html, body {
           height: 100%;
           margin: 0;
@@ -387,7 +389,7 @@ export default function LexicalEditor({
           display: flex;
           flex-direction: column;
           height: 100vh;
-          font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .toolbar {
@@ -437,7 +439,7 @@ export default function LexicalEditor({
           outline: none;
           font-size: 16px;
           line-height: 1.6;
-          font-family: inherit;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
           min-height: 100%;
         }
 
@@ -447,7 +449,7 @@ export default function LexicalEditor({
           left: 16px;
           color: #999;
           pointer-events: none;
-          font-family: inherit;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .editor-paragraph {
@@ -476,11 +478,13 @@ export default function LexicalEditor({
         }
 
         .editor-text-bold {
-          font-weight: bold;
+          font-weight: 700;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .editor-text-italic {
           font-style: italic;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .editor-text-underline {
@@ -495,7 +499,7 @@ export default function LexicalEditor({
           background: #f0f0f0;
           padding: 2px 4px;
           border-radius: 3px;
-          font-family: monospace;
+          font-family: 'CommitMono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
         }
 
         .editor-code {
