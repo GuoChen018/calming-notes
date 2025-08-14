@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   RefreshControl,
+  ScrollView,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -157,72 +158,74 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       </View>
 
       {/* Search and Notes Container */}
-      <View style={[styles.contentContainer, { 
-        backgroundColor: colors.surface,
-        borderColor: colors.border.light 
-      }]}>
-        {/* Search */}
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={[styles.searchInput, { 
-              backgroundColor: colors.surface,
-              color: colors.text.primary,
-              fontFamily: typography.fonts.regular,
-              fontSize: fontSize,
-            }]}
-            placeholder="Search notes..."
-            value={searchQuery}
-            onChangeText={handleSearch}
-            placeholderTextColor={colors.text.muted}
-          />
-        </View>
-
-        {/* Notes List */}
-        {notes.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={[styles.noteItem, { 
-              backgroundColor: colors.background,
-              borderBottomColor: colors.border.light 
-            }]}
-            onPress={() => onNotePress(item.id)}
-            onLongPress={() => handleDeleteNote(item.id, item.preview)}
-          >
-            <View style={styles.noteContent}>
-              <Text style={[styles.notePreview, { 
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <View style={[styles.contentContainer, { 
+          backgroundColor: colors.surface,
+          borderColor: colors.border.light 
+        }]}>
+          {/* Search */}
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={[styles.searchInput, { 
+                backgroundColor: colors.surface,
                 color: colors.text.primary,
                 fontFamily: typography.fonts.regular,
                 fontSize: fontSize,
-              }]} numberOfLines={2}>
-                {item.preview}
-              </Text>
-              <Text style={[styles.noteDate, { 
-                color: colors.text.secondary,
-                fontFamily: typography.fonts.regular,
-                fontSize: fontSize * 0.9,
-              }]}>
-                {formatDate(item.updated_at)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-        
-        {notes.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { 
-              fontFamily: typography.fonts.regular,
-              color: colors.text.secondary 
-            }]}>
-              {searchQuery ? 'No notes found' : 'No notes yet'}
-            </Text>
-            {!searchQuery && (
-              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
-              </TouchableOpacity>
-            )}
+              }]}
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+              placeholderTextColor={colors.text.muted}
+            />
           </View>
-        )}
-      </View>
+
+          {/* Notes List */}
+          {notes.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[styles.noteItem, { 
+                backgroundColor: colors.background,
+                borderBottomColor: colors.border.light 
+              }]}
+              onPress={() => onNotePress(item.id)}
+              onLongPress={() => handleDeleteNote(item.id, item.preview)}
+            >
+              <View style={styles.noteContent}>
+                <Text style={[styles.notePreview, { 
+                  color: colors.text.primary,
+                  fontFamily: typography.fonts.regular,
+                  fontSize: fontSize,
+                }]} numberOfLines={2}>
+                  {item.preview}
+                </Text>
+                <Text style={[styles.noteDate, { 
+                  color: colors.text.secondary,
+                  fontFamily: typography.fonts.regular,
+                  fontSize: fontSize * 0.9,
+                }]}>
+                  {formatDate(item.updated_at)}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          
+          {notes.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={[styles.emptyText, { 
+                fontFamily: typography.fonts.regular,
+                color: colors.text.secondary 
+              }]}>
+                {searchQuery ? 'No notes found' : 'No notes yet'}
+              </Text>
+              {!searchQuery && (
+                <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+                  <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
+      </ScrollView>
       
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
@@ -243,6 +246,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
+  },
+  scrollContainer: {
+    flex: 1,
   },
   contentContainer: {
     margin: 20,
