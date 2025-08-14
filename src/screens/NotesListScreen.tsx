@@ -166,12 +166,13 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           {/* Search */}
           <View style={styles.searchContainer}>
             <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
-              <Icon 
-                name="search" 
-                size={16} 
-                color="#A2ADC2" 
-                style={styles.searchIcon}
-              />
+              <View style={styles.searchIcon}>
+                <Icon 
+                  name="search" 
+                  size={16} 
+                  color="#A2ADC2" 
+                />
+              </View>
               <TextInput
                 style={[styles.searchInput, { 
                   backgroundColor: colors.surface,
