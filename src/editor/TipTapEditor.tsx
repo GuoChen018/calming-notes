@@ -229,6 +229,7 @@ export default function TipTapEditor({
           outline: none;
           padding: 1rem;
           line-height: 1.6;
+          font-family: 'Monaco', 'Consolas', 'SF Mono', monospace;
         }
         
         .ProseMirror ul, .ProseMirror ol {

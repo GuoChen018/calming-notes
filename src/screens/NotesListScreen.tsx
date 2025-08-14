@@ -10,6 +10,8 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
+import { useSettingsStore } from '../store/settingsStore';
+import { useTheme } from '../hooks/useTheme';
 import { NotePreview } from '../services/db';
 
 interface NotesListScreenProps {
@@ -28,6 +30,9 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     searchNotes,
     clearError,
   } = useNotesStore();
+
+  const { toggleTheme } = useSettingsStore();
+  const { colors, typography, fontSize, isDark } = useTheme();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -87,15 +92,24 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const renderNoteItem = ({ item }: { item: NotePreview }) => (
     <TouchableOpacity
-      style={styles.noteItem}
+      style={[styles.noteItem, { backgroundColor: colors.surface }]}
       onPress={() => onNotePress(item.id)}
       onLongPress={() => handleDeleteNote(item.id, item.preview)}
     >
       <View style={styles.noteContent}>
-        <Text style={styles.notePreview} numberOfLines={2}>
+        <Text style={[styles.notePreview, { 
+          color: colors.text.primary,
+          fontFamily: typography.fonts.regular,
+          fontSize: fontSize,
+        }]} numberOfLines={2}>
           {item.preview}
         </Text>
-        <Text style={styles.noteDate}>{formatDate(item.updated_at)}</Text>
+        <Text style={[styles.noteDate, { 
+          color: colors.text.secondary,
+          fontFamily: typography.fonts.regular,
+        }]}>
+          {formatDate(item.updated_at)}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -115,23 +129,38 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Notes</Text>
-        <TouchableOpacity style={styles.newButton} onPress={handleNewNote}>
-          <Text style={styles.newButtonText}>+ New</Text>
+      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
+        <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
+          <Text style={[styles.themeButtonText, { color: colors.text.secondary }]}>
+            {isDark ? '☀️' : '🌙'}
+          </Text>
+        </TouchableOpacity>
+        <Text style={[styles.title, { 
+          fontFamily: typography.fonts.regular, 
+          color: colors.text.primary 
+        }]}>
+          Notes
+        </Text>
+        <TouchableOpacity style={[styles.newButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+          <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>+ New</Text>
         </TouchableOpacity>
       </View>
 
       {/* Search */}
-      <View style={styles.searchContainer}>
+      <View style={[styles.searchContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, { 
+            backgroundColor: colors.surfaceSecondary,
+            color: colors.text.primary,
+            fontFamily: typography.fonts.regular,
+            fontSize: fontSize,
+          }]}
           placeholder="Search notes..."
           value={searchQuery}
           onChangeText={handleSearch}
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.text.muted}
         />
       </View>
 
@@ -165,7 +194,6 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
   },
   header: {
     flexDirection: 'row',
@@ -174,17 +202,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
+  },
+  themeButton: {
+    padding: 8,
+    borderRadius: 20,
+  },
+  themeButtonText: {
+    fontSize: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#212529',
+    flex: 1,
+    textAlign: 'center',
   },
   newButton: {
-    backgroundColor: '#007bff',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -197,23 +230,17 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
   },
   searchInput: {
-    backgroundColor: '#f8f9fa',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    fontSize: 16,
-    color: '#212529',
   },
   list: {
     flex: 1,
   },
   noteItem: {
-    backgroundColor: '#fff',
     marginHorizontal: 16,
     marginVertical: 4,
     borderRadius: 12,
@@ -228,14 +255,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   notePreview: {
-    fontSize: 16,
-    color: '#212529',
     lineHeight: 24,
     marginBottom: 8,
   },
   noteDate: {
     fontSize: 12,
-    color: '#6c757d',
   },
   emptyContainer: {
     flex: 1,
