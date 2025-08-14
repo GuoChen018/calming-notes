@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import TipTapEditor from '../editor/TipTapEditor';
 import { useNotesStore } from '../store/notesStore';
@@ -32,6 +33,9 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   const { colors, typography } = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  
+  // Animation for smooth fade-in
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   // Debounced save function (750ms delay)
   const debouncedSave = useDebounce(async (content: string) => {
@@ -53,6 +57,17 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       loadNote(noteId);
     }
   }, [noteId, loadNote]);
+
+  // Fade in animation when note loads
+  useEffect(() => {
+    if (currentNote && !isLoading) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [currentNote, isLoading, fadeAnim]);
 
   const handleContentChange = async (content: string) => {
     debouncedSave(content);
@@ -165,7 +180,13 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <Animated.View style={[
+      styles.container, 
+      { 
+        backgroundColor: colors.background,
+        opacity: fadeAnim,
+      }
+    ]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
@@ -217,7 +238,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
           }}
         />
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
