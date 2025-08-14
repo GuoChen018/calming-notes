@@ -25,6 +25,7 @@ export default function App() {
 
   useEffect(() => {
     if (fontsLoaded) {
+      console.log('Fonts loaded successfully!');
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);

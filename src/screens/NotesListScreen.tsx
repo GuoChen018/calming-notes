@@ -33,6 +33,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const { toggleTheme } = useSettingsStore();
   const { colors, typography, fontSize, isDark } = useTheme();
+  
+  // Debug: Log font family being used
+  console.log('Typography fonts:', typography.fonts);
+  console.log('Regular font:', typography.fonts.regular);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -138,7 +142,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
-          <Text style={[styles.themeButtonText, { color: colors.text.secondary }]}>
+          <Text style={[styles.themeButtonText, { 
+            color: colors.text.secondary,
+            fontFamily: typography.fonts.regular 
+          }]}>
             {isDark ? '☀️' : '🌙'}
           </Text>
         </TouchableOpacity>
