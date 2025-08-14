@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderBottomWidth: 1,
   },
   searchIcon: {
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   noteItem: {
     paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   noteContent: {
     flex: 1,
