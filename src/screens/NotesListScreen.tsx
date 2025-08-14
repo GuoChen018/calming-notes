@@ -169,7 +169,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
               <Icon 
                 name="search" 
                 size={16} 
-                color={colors.text.muted} 
+                color="#A2ADC2" 
                 style={styles.searchIcon}
               />
               <TextInput
@@ -182,7 +182,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                 placeholder="Search note"
                 value={searchQuery}
                 onChangeText={handleSearch}
-                placeholderTextColor={colors.text.muted}
+                placeholderTextColor="#A2ADC2"
               />
             </View>
           </View>
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: 12,
   },
   searchInput: {
     flex: 1,
