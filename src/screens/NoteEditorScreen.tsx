@@ -33,6 +33,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   const { colors, typography } = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [editorReady, setEditorReady] = useState(false);
   
   // Animation for smooth fade-in
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -40,6 +41,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   // Reset animation on mount
   useEffect(() => {
     fadeAnim.setValue(0);
+    setEditorReady(false);
   }, [fadeAnim]);
 
   // Debounced save function (750ms delay)
@@ -61,23 +63,25 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     if (noteId) {
       // Reset animation when loading a new note
       fadeAnim.setValue(0);
+      setEditorReady(false);
       loadNote(noteId);
     }
   }, [noteId, loadNote, fadeAnim]);
 
-  // Fade in animation when note loads
+  // Fade in animation when editor is ready
   useEffect(() => {
-    if (currentNote && currentNote.content_json && !isLoading) {
-      // Small delay to ensure TipTap has initialized with correct content
-      setTimeout(() => {
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start();
-      }, 100);
+    if (editorReady) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
     }
-  }, [currentNote, isLoading, fadeAnim]);
+  }, [editorReady, fadeAnim]);
+
+  const handleEditorReady = () => {
+    setEditorReady(true);
+  };
 
   const handleContentChange = async (content: string) => {
     debouncedSave(content);
@@ -237,6 +241,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
           <TipTapEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}
+            onReady={handleEditorReady}
             dom={{
               matchContents: true,
               style: styles.editor,

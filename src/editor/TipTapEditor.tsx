@@ -12,12 +12,14 @@ import { editorIcons } from './icons';
 interface TipTapEditorProps {
   content?: string;
   onUpdate?: (content: string) => Promise<void>;
+  onReady?: () => void;
   dom?: import('expo/dom').DOMProps;
 }
 
 export default function TipTapEditor({ 
   content = '', 
-  onUpdate 
+  onUpdate,
+  onReady
 }: TipTapEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -72,8 +74,15 @@ export default function TipTapEditor({
         // If it's not JSON, treat as HTML
         editor.commands.setContent(content);
       }
+      
+      // Notify that editor is ready with content
+      if (onReady) {
+        setTimeout(() => {
+          onReady();
+        }, 50);
+      }
     }
-  }, [editor, content]);
+  }, [editor, content, onReady]);
 
   const setLink = useCallback(() => {
     if (!editor) return;
