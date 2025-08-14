@@ -13,6 +13,7 @@ import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { useTheme } from '../hooks/useTheme';
 import { NotePreview } from '../services/db';
+import Icon from '../components/Icon';
 
 interface NotesListScreenProps {
   onNotePress: (noteId: string) => void;
@@ -138,12 +139,11 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
-          <Text style={[styles.themeButtonText, { 
-            color: colors.text.secondary,
-            fontFamily: typography.fonts.regular 
-          }]}>
-            {isDark ? '☀️' : '🌙'}
-          </Text>
+          <Icon 
+            name={isDark ? 'sun' : 'moon'} 
+            size={20} 
+            color={colors.text.secondary} 
+          />
         </TouchableOpacity>
         <Text style={[styles.title, { 
           fontFamily: typography.fonts.bold, 
@@ -152,7 +152,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           Notes
         </Text>
         <TouchableOpacity style={[styles.newButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-          <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>+ New</Text>
+          <View style={styles.buttonContent}>
+            <Icon name="add" size={16} color="#fff" />
+            <Text style={[styles.newButtonText, { fontFamily: typography.fonts.regular }]}>New</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -231,6 +234,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   newButtonText: {
     color: '#fff',

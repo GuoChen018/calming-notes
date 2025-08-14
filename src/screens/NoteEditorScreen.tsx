@@ -11,6 +11,7 @@ import TipTapEditor from '../editor/TipTapEditor';
 import { useNotesStore } from '../store/notesStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { useTheme } from '../hooks/useTheme';
+import Icon from '../components/Icon';
 
 interface NoteEditorScreenProps {
   noteId: string;
@@ -168,12 +169,15 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={[styles.backButtonText, { 
-            fontFamily: typography.fonts.regular,
-            color: colors.accent.primary 
-          }]}>
-            ← Back
-          </Text>
+          <View style={styles.buttonContent}>
+            <Icon name="arrow-left" size={16} color={colors.accent.primary} />
+            <Text style={[styles.backButtonText, { 
+              fontFamily: typography.fonts.regular,
+              color: colors.accent.primary 
+            }]}>
+              Back
+            </Text>
+          </View>
         </TouchableOpacity>
         
         <View style={styles.headerCenter}>
@@ -198,12 +202,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
         </View>
 
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={[styles.deleteButtonText, { 
-            fontFamily: typography.fonts.regular,
-            color: colors.accent.error 
-          }]}>
-            Delete
-          </Text>
+          <Icon name="trash" size={16} color={colors.accent.error} />
         </TouchableOpacity>
       </View>
 
@@ -238,6 +237,11 @@ const styles = StyleSheet.create({
   backButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   backButtonText: {
     fontSize: 16,
