@@ -1,6 +1,6 @@
 'use dom';
 
-import { $getRoot, $getSelection } from 'lexical';
+import { $getRoot, $getSelection, $createParagraphNode, $createTextNode } from 'lexical';
 import { $isRangeSelection } from 'lexical';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -232,18 +232,66 @@ function UpdatePlugin({ onUpdate }: { onUpdate?: (content: string) => Promise<vo
 function InitialContentPlugin({ content }: { content?: string }) {
   const [editor] = useLexicalComposerContext();
 
+  const convertTipTapToText = (tipTapContent: any): string => {
+    if (!tipTapContent || !tipTapContent.content) return '';
+    
+    const extractText = (node: any): string => {
+      if (node.type === 'text') {
+        return node.text || '';
+      }
+      
+      if (node.content && Array.isArray(node.content)) {
+        return node.content.map(extractText).join('');
+      }
+      
+      return '';
+    };
+
+    return tipTapContent.content.map(extractText).join('\n\n');
+  };
+
   useEffect(() => {
     if (content) {
       try {
         const parsedContent = JSON.parse(content);
-        const editorState = editor.parseEditorState(parsedContent);
-        editor.setEditorState(editorState);
+        
+        // Check if this is TipTap format (has 'type' and 'content' structure)
+        if (parsedContent.type && parsedContent.content) {
+          // Convert TipTap content to plain text for now to avoid data loss
+          const plainText = convertTipTapToText(parsedContent);
+          editor.update(() => {
+            const root = $getRoot();
+            root.clear();
+            
+            // Split by paragraphs and create proper nodes
+            const paragraphs = plainText.split('\n\n').filter(p => p.trim());
+            paragraphs.forEach((paragraph) => {
+              if (paragraph.trim()) {
+                const paragraphNode = $createParagraphNode();
+                paragraphNode.append($createTextNode(paragraph.trim()));
+                root.append(paragraphNode);
+              }
+            });
+            
+            if (paragraphs.length === 0) {
+              // Empty content, add a single empty paragraph
+              const paragraphNode = $createParagraphNode();
+              root.append(paragraphNode);
+            }
+          });
+        } else {
+          // Try to parse as Lexical format
+          const editorState = editor.parseEditorState(parsedContent);
+          editor.setEditorState(editorState);
+        }
       } catch (error) {
-        // If parsing fails, set as plain text
+        // If all parsing fails, set as plain text
         editor.update(() => {
           const root = $getRoot();
           root.clear();
-          root.append(editor.createParagraphNode().append(editor.createTextNode(content)));
+          const paragraphNode = $createParagraphNode();
+          paragraphNode.append($createTextNode(content || ''));
+          root.append(paragraphNode);
         });
       }
     }
