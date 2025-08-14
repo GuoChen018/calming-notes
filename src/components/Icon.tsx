@@ -52,5 +52,5 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     return null;
   }
 
-  return <IconComponent width={size} height={size} fill={color} />;
+  return <IconComponent width={size} height={size} fill={color} stroke={color} />;
 }

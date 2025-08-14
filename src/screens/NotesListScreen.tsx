@@ -198,7 +198,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
-        <Icon name="add" size={24} color="#fff" />
+        <Icon name="add" size={24} color="#ffffff" />
       </TouchableOpacity>
     </View>
   );
