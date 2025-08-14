@@ -221,6 +221,13 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           
           {notes.length === 0 && (
             <View style={styles.emptyState}>
+              {searchQuery && (
+                <Icon 
+                  name="cat" 
+                  size={100} 
+                  color="#A2ADC2" 
+                />
+              )}
               <Text style={[styles.emptyText, { 
                 fontFamily: typography.fonts.regular,
                 color: colors.text.secondary 
@@ -334,11 +341,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
+    paddingTop: 60,
   },
   emptyText: {
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 20,
+    marginTop: 20,
   },
   createFirstButton: {
     paddingHorizontal: 24,
