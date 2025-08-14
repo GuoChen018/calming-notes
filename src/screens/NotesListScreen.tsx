@@ -178,31 +178,23 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         </View>
 
         {/* Notes List */}
-        <FlatList
-          data={notes}
-          renderItem={renderNoteItem}
-          keyExtractor={(item) => item.id}
-          style={styles.list}
-          contentContainerStyle={notes.length === 0 ? styles.emptyContainer : undefined}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-          ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <Text style={[styles.emptyText, { 
-                fontFamily: typography.fonts.regular,
-                color: colors.text.secondary 
-              }]}>
-                {searchQuery ? 'No notes found' : 'No notes yet'}
-              </Text>
-              {!searchQuery && (
-                <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-                  <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          }
-        />
+        {notes.map((item) => renderNoteItem({ item }))}
+        
+        {notes.length === 0 && (
+          <View style={styles.emptyState}>
+            <Text style={[styles.emptyText, { 
+              fontFamily: typography.fonts.regular,
+              color: colors.text.secondary 
+            }]}>
+              {searchQuery ? 'No notes found' : 'No notes yet'}
+            </Text>
+            {!searchQuery && (
+              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </View>
       
       {/* Floating Action Button */}
@@ -226,7 +218,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   contentContainer: {
-    flex: 1,
     margin: 20,
     borderWidth: 1,
   },
@@ -257,11 +248,10 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   searchContainer: {
-    paddingHorizontal: 20,
     paddingVertical: 16,
   },
   searchInput: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 12,
   },
   list: {
