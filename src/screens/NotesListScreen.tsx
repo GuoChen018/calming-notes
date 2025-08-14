@@ -198,7 +198,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
-        <Icon name="add" size={24} color="#ffffff" />
+        <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
     </View>
   );
@@ -236,6 +236,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#4D5461',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  fabIcon: {
+    color: '#ffffff',
+    fontSize: 28,
+    fontWeight: '300',
+    lineHeight: 28,
   },
   searchContainer: {
     paddingHorizontal: 20,
