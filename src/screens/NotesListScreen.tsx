@@ -116,13 +116,18 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={() => {
+      <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.errorText, { 
+          fontFamily: typography.fonts.regular,
+          color: colors.accent.error 
+        }]}>
+          {error}
+        </Text>
+        <TouchableOpacity style={[styles.retryButton, { backgroundColor: colors.accent.primary }]} onPress={() => {
           clearError();
           loadNotes();
         }}>
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={[styles.retryButtonText, { fontFamily: typography.fonts.regular }]}>Retry</Text>
         </TouchableOpacity>
       </View>
     );
@@ -176,12 +181,15 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         }
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>
+            <Text style={[styles.emptyText, { 
+              fontFamily: typography.fonts.regular,
+              color: colors.text.secondary 
+            }]}>
               {searchQuery ? 'No notes found' : 'No notes yet'}
             </Text>
             {!searchQuery && (
-              <TouchableOpacity style={styles.createFirstButton} onPress={handleNewNote}>
-                <Text style={styles.createFirstButtonText}>Create your first note</Text>
+              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -272,12 +280,10 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#6c757d',
     textAlign: 'center',
     marginBottom: 20,
   },
   createFirstButton: {
-    backgroundColor: '#007bff',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 24,
@@ -295,12 +301,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: '#dc3545',
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#007bff',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 24,

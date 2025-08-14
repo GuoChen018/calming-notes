@@ -10,6 +10,7 @@ import {
 import TipTapEditor from '../editor/TipTapEditor';
 import { useNotesStore } from '../store/notesStore';
 import { useDebounce } from '../hooks/useDebounce';
+import { useTheme } from '../hooks/useTheme';
 
 interface NoteEditorScreenProps {
   noteId: string;
@@ -27,6 +28,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     clearError,
   } = useNotesStore();
 
+  const { colors, typography } = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
@@ -98,28 +100,43 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles.loadingText}>Loading note...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.accent.primary} />
+        <Text style={[styles.loadingText, { 
+          fontFamily: typography.fonts.regular,
+          color: colors.text.secondary 
+        }]}>
+          Loading note...
+        </Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.errorText, { 
+          fontFamily: typography.fonts.regular,
+          color: colors.accent.error 
+        }]}>
+          {error}
+        </Text>
         <TouchableOpacity
-          style={styles.retryButton}
+          style={[styles.retryButton, { backgroundColor: colors.accent.primary }]}
           onPress={() => {
             clearError();
             loadNote(noteId);
           }}
         >
-          <Text style={styles.retryButtonText}>Retry</Text>
+          <Text style={[styles.retryButtonText, { fontFamily: typography.fonts.regular }]}>Retry</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={[styles.backButtonText, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.accent.primary 
+          }]}>
+            Go Back
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -127,36 +144,66 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   if (!currentNote) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Note not found</Text>
+      <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.errorText, { 
+          fontFamily: typography.fonts.regular,
+          color: colors.accent.error 
+        }]}>
+          Note not found
+        </Text>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={[styles.backButtonText, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.accent.primary 
+          }]}>
+            Go Back
+          </Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={[styles.backButtonText, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.accent.primary 
+          }]}>
+            ← Back
+          </Text>
         </TouchableOpacity>
         
         <View style={styles.headerCenter}>
           {isSaving ? (
             <View style={styles.savingIndicator}>
-              <ActivityIndicator size="small" color="#007bff" />
-              <Text style={styles.savingText}>Saving...</Text>
+              <ActivityIndicator size="small" color={colors.accent.primary} />
+              <Text style={[styles.savingText, { 
+                fontFamily: typography.fonts.regular,
+                color: colors.accent.primary 
+              }]}>
+                Saving...
+              </Text>
             </View>
           ) : (
-            <Text style={styles.savedText}>{formatLastSaved()}</Text>
+            <Text style={[styles.savedText, { 
+              fontFamily: typography.fonts.regular,
+              color: colors.text.muted 
+            }]}>
+              {formatLastSaved()}
+            </Text>
           )}
         </View>
 
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
+          <Text style={[styles.deleteButtonText, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.accent.error 
+          }]}>
+            Delete
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -178,7 +225,6 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
@@ -187,9 +233,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 60,
     paddingBottom: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
   },
   backButton: {
     paddingVertical: 8,
@@ -197,7 +241,6 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    color: '#007bff',
     fontWeight: '600',
   },
   headerCenter: {
@@ -210,12 +253,10 @@ const styles = StyleSheet.create({
   },
   savingText: {
     fontSize: 12,
-    color: '#007bff',
     marginLeft: 4,
   },
   savedText: {
     fontSize: 12,
-    color: '#6c757d',
   },
   deleteButton: {
     paddingVertical: 8,
@@ -223,7 +264,6 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     fontSize: 16,
-    color: '#dc3545',
     fontWeight: '600',
   },
   editorContainer: {
@@ -236,28 +276,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#6c757d',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
-    backgroundColor: '#fff',
   },
   errorText: {
     fontSize: 16,
-    color: '#dc3545',
     textAlign: 'center',
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#007bff',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 24,

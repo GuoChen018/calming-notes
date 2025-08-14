@@ -225,40 +225,13 @@ export default function TipTapEditor({
 
       {/* Basic CSS for the editor */}
       <style>{`
-        @font-face {
-          font-family: 'CommitMono';
-          src: url('/assets/fonts/CommitMono-400-Regular.otf') format('opentype');
-          font-weight: 400;
-          font-style: normal;
-        }
-        
-        @font-face {
-          font-family: 'CommitMono';
-          src: url('/assets/fonts/CommitMono-400-Italic.otf') format('opentype');
-          font-weight: 400;
-          font-style: italic;
-        }
-        
-        @font-face {
-          font-family: 'CommitMono';
-          src: url('/assets/fonts/CommitMono-700-Regular.otf') format('opentype');
-          font-weight: 700;
-          font-style: normal;
-        }
-        
-        @font-face {
-          font-family: 'CommitMono';
-          src: url('/assets/fonts/CommitMono-700-Italic.otf') format('opentype');
-          font-weight: 700;
-          font-style: italic;
-        }
-        
         .ProseMirror {
           outline: none;
           padding: 1rem;
           line-height: 1.6;
-          font-family: 'CommitMono', 'Monaco', 'Consolas', 'SF Mono', monospace;
+          font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Source Code Pro', 'Menlo', 'Consolas', monospace;
           font-weight: 400;
+          font-size: 16px;
         }
         
         .ProseMirror ul, .ProseMirror ol {
