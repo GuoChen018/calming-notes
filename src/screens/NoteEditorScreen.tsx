@@ -36,6 +36,11 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   
   // Animation for smooth fade-in
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  
+  // Reset animation on mount
+  useEffect(() => {
+    fadeAnim.setValue(0);
+  }, [fadeAnim]);
 
   // Debounced save function (750ms delay)
   const debouncedSave = useDebounce(async (content: string) => {
@@ -54,9 +59,11 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   useEffect(() => {
     if (noteId) {
+      // Reset animation when loading a new note
+      fadeAnim.setValue(0);
       loadNote(noteId);
     }
-  }, [noteId, loadNote]);
+  }, [noteId, loadNote, fadeAnim]);
 
   // Fade in animation when note loads
   useEffect(() => {
@@ -65,10 +72,10 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 300,
+          duration: 500,
           useNativeDriver: true,
         }).start();
-      }, 150);
+      }, 100);
     }
   }, [currentNote, isLoading, fadeAnim]);
 
