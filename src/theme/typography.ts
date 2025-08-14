@@ -1,6 +1,9 @@
 export const typography = {
   fonts: {
-    regular: 'CommitMono-Regular',
+    regular: 'CommitMono-400-Regular',
+    italic: 'CommitMono-400-Italic',
+    bold: 'CommitMono-700-Regular',
+    boldItalic: 'CommitMono-700-Italic',
     system: 'System', // Fallback to system font
   },
   sizes: {

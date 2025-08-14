@@ -225,11 +225,40 @@ export default function TipTapEditor({
 
       {/* Basic CSS for the editor */}
       <style>{`
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('/assets/fonts/CommitMono-400-Regular.otf') format('opentype');
+          font-weight: 400;
+          font-style: normal;
+        }
+        
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('/assets/fonts/CommitMono-400-Italic.otf') format('opentype');
+          font-weight: 400;
+          font-style: italic;
+        }
+        
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('/assets/fonts/CommitMono-700-Regular.otf') format('opentype');
+          font-weight: 700;
+          font-style: normal;
+        }
+        
+        @font-face {
+          font-family: 'CommitMono';
+          src: url('/assets/fonts/CommitMono-700-Italic.otf') format('opentype');
+          font-weight: 700;
+          font-style: italic;
+        }
+        
         .ProseMirror {
           outline: none;
           padding: 1rem;
           line-height: 1.6;
-          font-family: 'Monaco', 'Consolas', 'SF Mono', monospace;
+          font-family: 'CommitMono', 'Monaco', 'Consolas', 'SF Mono', monospace;
+          font-weight: 400;
         }
         
         .ProseMirror ul, .ProseMirror ol {
@@ -280,12 +309,27 @@ export default function TipTapEditor({
         
         .ProseMirror h1, .ProseMirror h2, .ProseMirror h3 {
           margin: 1rem 0 0.5rem 0;
-          font-weight: bold;
+          font-weight: 700;
         }
         
         .ProseMirror h1 { font-size: 1.5rem; }
         .ProseMirror h2 { font-size: 1.25rem; }
         .ProseMirror h3 { font-size: 1.125rem; }
+        
+        /* CommitMono font weight and style mappings */
+        .ProseMirror strong {
+          font-weight: 700;
+        }
+        
+        .ProseMirror em {
+          font-style: italic;
+        }
+        
+        .ProseMirror strong em,
+        .ProseMirror em strong {
+          font-weight: 700;
+          font-style: italic;
+        }
       `}</style>
     </div>
   );
