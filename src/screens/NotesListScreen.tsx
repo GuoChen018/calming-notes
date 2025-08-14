@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -38,10 +39,21 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const searchInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     loadNotes();
   }, [loadNotes]);
+
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      searchInputRef.current?.blur();
+    });
+
+    return () => {
+      keyboardDidHideListener?.remove();
+    };
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -174,6 +186,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                 />
               </View>
               <TextInput
+                ref={searchInputRef}
                 style={[styles.searchInput, { 
                   backgroundColor: colors.surface,
                   color: colors.text.primary,
