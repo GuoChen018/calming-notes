@@ -292,13 +292,13 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   searchContainer: {
-    paddingVertical: 12,
+    paddingVertical: 0,
   },
   searchInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderBottomWidth: 1,
   },
   searchIcon: {
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   },
   noteItem: {
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   noteContent: {
     flex: 1,
