@@ -103,14 +103,25 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-2 rounded ${
             editor.isActive('bold') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Bold"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" stroke="currentColor" strokeWidth="2"/>
-            <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" stroke="currentColor" strokeWidth="2"/>
+            <g clipPath="url(#clip0_35_677)">
+              <rect x="5" y="4" width="2" height="18" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+              <rect x="17" y="13" width="2" height="5" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+              <rect x="17" y="6" width="2" height="5" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+              <rect x="5" y="6" width="2" height="12" transform="rotate(-90 5 6)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+              <rect x="5" y="13" width="2" height="12" transform="rotate(-90 5 13)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+              <rect x="5" y="20" width="2" height="12" transform="rotate(-90 5 20)" fill={editor.isActive('bold') ? '#fff' : '#697180'}/>
+            </g>
+            <defs>
+              <clipPath id="clip0_35_677">
+                <rect width="14" height="16" fill="white" transform="translate(5 4)"/>
+              </clipPath>
+            </defs>
           </svg>
         </button>
         
@@ -118,15 +129,24 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-2 rounded ${
             editor.isActive('italic') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Italic"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <line x1="19" y1="4" x2="10" y2="4" stroke="currentColor" strokeWidth="2"/>
-            <line x1="14" y1="20" x2="5" y2="20" stroke="currentColor" strokeWidth="2"/>
-            <line x1="15" y1="4" x2="9" y2="20" stroke="currentColor" strokeWidth="2"/>
+            <g clipPath="url(#clip0_35_714)">
+              <rect x="8" y="6" width="2" height="12" transform="rotate(-90 8 6)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
+              <rect x="13" y="10" width="4" height="2" transform="rotate(-90 13 10)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
+              <rect x="11" y="14" width="4" height="2" transform="rotate(-90 11 14)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
+              <rect x="9" y="18" width="4" height="2" transform="rotate(-90 9 18)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
+              <rect x="4" y="20" width="2" height="12" transform="rotate(-90 4 20)" fill={editor.isActive('italic') ? '#fff' : '#697180'}/>
+            </g>
+            <defs>
+              <clipPath id="clip0_35_714">
+                <rect width="18" height="16" fill="white" transform="translate(3 4)"/>
+              </clipPath>
+            </defs>
           </svg>
         </button>
 
@@ -134,14 +154,23 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`p-2 rounded ${
             editor.isActive('underline') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Underline"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3" stroke="currentColor" strokeWidth="2"/>
-            <line x1="4" y1="21" x2="20" y2="21" stroke="currentColor" strokeWidth="2"/>
+            <g clipPath="url(#clip0_35_686)">
+              <rect x="5" y="14" width="10" height="2" transform="rotate(-90 5 14)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
+              <rect x="7" y="16" width="2" height="10" transform="rotate(-90 7 16)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
+              <rect x="5" y="20" width="2" height="14" transform="rotate(-90 5 20)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
+              <rect x="17" y="14" width="10" height="2" transform="rotate(-90 17 14)" fill={editor.isActive('underline') ? '#fff' : '#697180'}/>
+            </g>
+            <defs>
+              <clipPath id="clip0_35_686">
+                <rect width="14" height="16" fill="white" transform="translate(5 4)"/>
+              </clipPath>
+            </defs>
           </svg>
         </button>
 
@@ -181,18 +210,13 @@ export default function TipTapEditor({
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`p-2 rounded ${
             editor.isActive('bulletList') 
-              ? 'bg-blue-500 text-white' 
+              ? 'bg-blue-500' 
               : 'bg-gray-100 hover:bg-gray-200'
           }`}
           title="Bullet List"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2"/>
-            <line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2"/>
-            <line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="2"/>
-            <line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" strokeWidth="2"/>
-            <line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" strokeWidth="2"/>
-            <line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" strokeWidth="2"/>
+            <path d="M6 18H4V16H6V18ZM20 18H8V16H20V18ZM6 13H4V11H6V13ZM20 13H8V11H20V13ZM6 8H4V6H6V8ZM20 8H8V6H20V8Z" fill={editor.isActive('bulletList') ? '#fff' : '#697180'}/>
           </svg>
         </button>
 
