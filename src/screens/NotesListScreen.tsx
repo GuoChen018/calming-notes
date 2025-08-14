@@ -165,19 +165,26 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         }]}>
           {/* Search */}
           <View style={styles.searchContainer}>
-            <TextInput
-              style={[styles.searchInput, { 
-                backgroundColor: colors.surface,
-                color: colors.text.primary,
-                fontFamily: typography.fonts.regular,
-                fontSize: fontSize,
-                borderBottomColor: colors.border.light,
-              }]}
-              placeholder="Search notes..."
-              value={searchQuery}
-              onChangeText={handleSearch}
-              placeholderTextColor={colors.text.muted}
-            />
+            <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
+              <Icon 
+                name="search" 
+                size={16} 
+                color={colors.text.muted} 
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={[styles.searchInput, { 
+                  backgroundColor: colors.surface,
+                  color: colors.text.primary,
+                  fontFamily: typography.fonts.regular,
+                  fontSize: fontSize,
+                }]}
+                placeholder="Search note"
+                value={searchQuery}
+                onChangeText={handleSearch}
+                placeholderTextColor={colors.text.muted}
+              />
+            </View>
           </View>
 
           {/* Notes List */}
@@ -254,7 +261,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 20,
     borderWidth: 1,
   },
@@ -287,10 +294,18 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingVertical: 12,
   },
-  searchInput: {
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderBottomWidth: 1,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
     textAlign: 'left',
   },
   list: {
