@@ -31,8 +31,6 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   } = useNotesStore();
 
   const { colors, typography } = useTheme();
-  const [isSaving, setIsSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [editorReady, setEditorReady] = useState(false);
   
   // Animation for smooth fade-in
@@ -48,14 +46,10 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   const debouncedSave = useDebounce(async (content: string) => {
     if (!noteId) return;
     
-    setIsSaving(true);
     try {
       await updateNote(noteId, content);
-      setLastSaved(new Date());
     } catch (error) {
       console.error('Failed to save note:', error);
-    } finally {
-      setIsSaving(false);
     }
   }, 750);
 
@@ -73,7 +67,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     if (editorReady) {
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 400,
+        duration: 600,
         useNativeDriver: true,
       }).start();
     }
@@ -109,24 +103,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     );
   };
 
-  const formatLastSaved = () => {
-    if (!lastSaved) return '';
-    
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - lastSaved.getTime()) / 1000);
-    
-    if (diffInSeconds < 60) {
-      return 'Saved just now';
-    } else if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `Saved ${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-    } else {
-      return `Saved at ${lastSaved.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      })}`;
-    }
-  };
+
 
   if (isLoading) {
     return (
@@ -210,24 +187,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
         </TouchableOpacity>
         
         <View style={styles.headerCenter}>
-          {isSaving ? (
-            <View style={styles.savingIndicator}>
-              <ActivityIndicator size="small" color={colors.accent.primary} />
-              <Text style={[styles.savingText, { 
-                fontFamily: typography.fonts.regular,
-                color: colors.accent.primary 
-              }]}>
-                Saving...
-              </Text>
-            </View>
-          ) : (
-            <Text style={[styles.savedText, { 
-              fontFamily: typography.fonts.regular,
-              color: colors.text.muted 
-            }]}>
-              {formatLastSaved()}
-            </Text>
-          )}
+          {/* Removed save status display */}
         </View>
 
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
