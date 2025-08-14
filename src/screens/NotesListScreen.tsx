@@ -178,7 +178,34 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         </View>
 
         {/* Notes List */}
-        {notes.map((item) => renderNoteItem({ item }))}
+        {notes.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[styles.noteItem, { 
+              backgroundColor: colors.background,
+              borderBottomColor: colors.border.light 
+            }]}
+            onPress={() => onNotePress(item.id)}
+            onLongPress={() => handleDeleteNote(item.id, item.preview)}
+          >
+            <View style={styles.noteContent}>
+              <Text style={[styles.notePreview, { 
+                color: colors.text.primary,
+                fontFamily: typography.fonts.regular,
+                fontSize: fontSize,
+              }]} numberOfLines={2}>
+                {item.preview}
+              </Text>
+              <Text style={[styles.noteDate, { 
+                color: colors.text.secondary,
+                fontFamily: typography.fonts.regular,
+                fontSize: fontSize * 0.9,
+              }]}>
+                {formatDate(item.updated_at)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
         
         {notes.length === 0 && (
           <View style={styles.emptyState}>
