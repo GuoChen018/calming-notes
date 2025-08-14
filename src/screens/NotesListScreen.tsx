@@ -164,13 +164,14 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           borderColor: colors.border.light 
         }]}>
           {/* Search */}
-          <View style={[styles.searchContainer, { borderBottomColor: colors.border.light }]}>
+          <View style={styles.searchContainer}>
             <TextInput
               style={[styles.searchInput, { 
                 backgroundColor: colors.surface,
                 color: colors.text.primary,
                 fontFamily: typography.fonts.regular,
                 fontSize: fontSize,
+                borderBottomColor: colors.border.light,
               }]}
               placeholder="Search notes..."
               value={searchQuery}
@@ -284,11 +285,11 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingVertical: 12,
-    borderBottomWidth: 1,
   },
   searchInput: {
     paddingHorizontal: 20,
     paddingVertical: 12,
+    borderBottomWidth: 1,
   },
   list: {
     flex: 1,
