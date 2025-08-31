@@ -1,24 +1,28 @@
 import React from 'react';
 
-// Import your actual SVG files
-import SunIcon from '../../assets/icons/sun.svg';
-import MoonIcon from '../../assets/icons/moon.svg';
-import AddIcon from '../../assets/icons/add.svg';
-import ArrowLeftIcon from '../../assets/icons/arrow-left.svg';
-import TrashIcon from '../../assets/icons/trash.svg';
-import SearchIcon from '../../assets/icons/search.svg';
-import BoldIcon from '../../assets/icons/bold.svg';
-import ItalicIcon from '../../assets/icons/italic.svg';
-import UnderlineIcon from '../../assets/icons/underline.svg';
-import StrikethroughIcon from '../../assets/icons/strikethrough.svg';
-import CodeIcon from '../../assets/icons/code.svg';
-import LinkIcon from '../../assets/icons/link.svg';
-import ListIcon from '../../assets/icons/list.svg';
-import NumberedListIcon from '../../assets/icons/numbered-list.svg';
-import QuoteIcon from '../../assets/icons/quote.svg';
-import ColorIcon from '../../assets/icons/color.svg';
-import HighlighterIcon from '../../assets/icons/highlighter.svg';
-import CatIcon from '../../assets/icons/cat.svg';
+// Import your actual SVG files from rounded folder
+import SunIcon from '../../assets/icons/rounded/Frame-4.svg';
+import MoonIcon from '../../assets/icons/rounded/Frame-3.svg';
+import AddIcon from '../../assets/icons/rounded/Frame.svg';
+import ArrowLeftIcon from '../../assets/icons/rounded/arrow-left.svg';
+import TrashIcon from '../../assets/icons/rounded/Frame-1.svg';
+import CloseIcon from '../../assets/icons/rounded/Frame-2.svg';
+import SearchIcon from '../../assets/icons/rounded/search.svg';
+import BoldIcon from '../../assets/icons/rounded/bold.svg';
+import ItalicIcon from '../../assets/icons/rounded/italic.svg';
+import UnderlineIcon from '../../assets/icons/rounded/underline.svg';
+import StrikethroughIcon from '../../assets/icons/rounded/strikethrough.svg';
+import CodeIcon from '../../assets/icons/rounded/code.svg';
+import LinkIcon from '../../assets/icons/rounded/link.svg';
+import ListIcon from '../../assets/icons/rounded/list.svg';
+import NumberedListIcon from '../../assets/icons/rounded/numbered-list.svg';
+import QuoteIcon from '../../assets/icons/rounded/quote.svg';
+import ColorIcon from '../../assets/icons/rounded/Frame-5.svg';
+import HighlighterIcon from '../../assets/icons/rounded/highlighter.svg';
+import EditIcon from '../../assets/icons/rounded/edit.svg';
+import IndentLeftIcon from '../../assets/icons/rounded/indent-left.svg';
+import IndentRightIcon from '../../assets/icons/rounded/indent-right.svg';
+import PandaIcon from '../../assets/icons/rounded/panda.svg';
 
 interface IconProps {
   name: string;
@@ -33,6 +37,7 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     add: AddIcon,
     'arrow-left': ArrowLeftIcon,
     trash: TrashIcon,
+    close: CloseIcon,
     search: SearchIcon,
     bold: BoldIcon,
     italic: ItalicIcon,
@@ -45,7 +50,11 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     quote: QuoteIcon,
     color: ColorIcon,
     highlighter: HighlighterIcon,
-    cat: CatIcon,
+    edit: EditIcon,
+    'indent-left': IndentLeftIcon,
+    'indent-right': IndentRightIcon,
+    panda: PandaIcon,
+    cat: PandaIcon, // Legacy support - map cat to panda
   };
 
   const IconComponent = iconComponents[name];
@@ -54,5 +63,5 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     return null;
   }
 
-  return <IconComponent width={size} height={size} fill={color} style={{ color }} />;
+  return <IconComponent width={size} height={size} style={{ color }} />;
 }

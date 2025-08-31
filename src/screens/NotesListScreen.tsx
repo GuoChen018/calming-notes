@@ -39,10 +39,14 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const searchInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    loadNotes();
+    loadNotes().finally(() => {
+      // Mark initial load as complete after the first load
+      setInitialLoad(false);
+    });
   }, [loadNotes]);
 
   useEffect(() => {
@@ -131,7 +135,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     </TouchableOpacity>
   );
 
-  if (error) {
+  if (error && !isLoading) {
     return (
       <View style={[styles.errorContainer, { backgroundColor: colors.background }]}>
         <Text style={[styles.errorText, { 
@@ -150,12 +154,24 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     );
   }
 
+  if (isLoading && !initialLoad) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: colors.text.primary }}>Loading...</Text>
+      </View>
+    );
+  }
+
+  // During initial load while loading, show nothing (transparent)
+  if (isLoading && initialLoad) {
+    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  }
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.surface }]}>
         <Text style={[styles.title, { 
-          fontFamily: typography.fonts.bold, 
+          fontFamily: typography.fonts.regular, 
           color: colors.text.primary 
         }]}>
           Notes
@@ -247,7 +263,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
               }]}>
                 {searchQuery ? 'No notes found' : 'No notes yet'}
               </Text>
-              {!searchQuery && (
+              {!searchQuery && !isLoading && (
                 <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
                   <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
                 </TouchableOpacity>

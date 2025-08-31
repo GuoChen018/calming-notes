@@ -137,11 +137,22 @@ class DatabaseService {
     await this.init();
     if (!this.db) throw new Error('Database not initialized');
 
+    // Ensure content is not empty or null
+    const safeContent = contentJson || JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: []
+        }
+      ]
+    });
+
     const updated_at = Date.now();
     
     await this.db.runAsync(
       'UPDATE notes SET content_json = ?, updated_at = ? WHERE id = ?',
-      [contentJson, updated_at, id]
+      [safeContent, updated_at, id]
     );
   }
 

@@ -2,19 +2,19 @@ import { useFonts as useExpoFonts } from 'expo-font';
 
 export function useFonts() {
   const [fontsLoaded] = useExpoFonts({
-    'CommitMono': require('../../assets/fonts/CommitMono-400-Regular.otf'),
-    'CommitMono-Italic': require('../../assets/fonts/CommitMono-400-Italic.otf'),
-    'CommitMono-Bold': require('../../assets/fonts/CommitMono-700-Regular.otf'),
-    'CommitMono-BoldItalic': require('../../assets/fonts/CommitMono-700-Italic.otf'),
+    'CrimsonPro-Regular': require('../../assets/fonts/CrimsonPro-Regular.ttf'),
+    'CrimsonPro-Italic': require('../../assets/fonts/CrimsonPro-Italic.ttf'),
+    'CrimsonPro-ExtraBold': require('../../assets/fonts/CrimsonPro-ExtraBold.ttf'),
+    'CrimsonPro-ExtraBoldItalic': require('../../assets/fonts/CrimsonPro-ExtraBoldItalic.ttf'),
   });
 
   return {
     fontsLoaded,
     fonts: {
-      regular: 'CommitMono',
-      italic: 'CommitMono-Italic',
-      bold: 'CommitMono-Bold',
-      boldItalic: 'CommitMono-BoldItalic',
+      regular: 'CrimsonPro-Regular',
+      italic: 'CrimsonPro-Italic',
+      bold: 'CrimsonPro-ExtraBold',
+      boldItalic: 'CrimsonPro-ExtraBoldItalic',
     },
   };
 }

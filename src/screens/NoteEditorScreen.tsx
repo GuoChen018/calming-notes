@@ -7,12 +7,12 @@ import {
   Alert,
   ActivityIndicator,
   Animated,
-  Keyboard,
 } from 'react-native';
-import LexicalEditor from '../editor/LexicalEditor';
+import SimpleEditor from '../editor/SimpleEditor';
 import { useNotesStore } from '../store/notesStore';
 import { useDebounce } from '../hooks/useDebounce';
 import { useTheme } from '../hooks/useTheme';
+import { useFonts } from '../hooks/useFonts';
 import Icon from '../components/Icon';
 
 interface NoteEditorScreenProps {
@@ -33,8 +33,11 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   } = useNotesStore();
 
   const { colors, typography } = useTheme();
+  const { fontsLoaded } = useFonts();
   const [editorReady, setEditorReady] = useState(false);
-  const [keyboardDismissed, setKeyboardDismissed] = useState(false);
+
+
+
   const editorRef = useRef<any>(null);
   
   // Animation for smooth fade-in
@@ -45,6 +48,8 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     fadeAnim.setValue(0);
     setEditorReady(false);
   }, [fadeAnim]);
+
+
 
   // Debounced save function (750ms delay)
   const debouncedSave = useDebounce(async (content: string) => {
@@ -77,24 +82,13 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
     }
   }, [editorReady, fadeAnim]);
 
-  // Handle keyboard dismissal
-  useEffect(() => {
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      console.log('React Native detected keyboard dismissal');
-      // Set state that will be passed to DOM component
-      setKeyboardDismissed(true);
-      // Reset after a short delay
-      setTimeout(() => setKeyboardDismissed(false), 100);
-    });
 
-    return () => {
-      keyboardDidHideListener?.remove();
-    };
-  }, []);
 
   const handleEditorReady = () => {
     setEditorReady(true);
   };
+
+
 
   const handleContentChange = async (content: string) => {
     debouncedSave(content);
@@ -222,16 +216,21 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
       {/* Editor */}
       <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
-        {currentNote && currentNote.content_json ? (
-          <LexicalEditor
+        {!fontsLoaded ? (
+          <View style={styles.editorPlaceholder}>
+            <ActivityIndicator size="small" color={colors.accent.primary} />
+            <Text style={[styles.loadingText, { 
+              fontFamily: typography.fonts.regular,
+              color: colors.text.secondary 
+            }]}>
+              Loading fonts...
+            </Text>
+          </View>
+        ) : currentNote && currentNote.content_json ? (
+          <SimpleEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}
             onReady={handleEditorReady}
-            keyboardDismissed={keyboardDismissed}
-            dom={{
-              matchContents: true,
-              style: [styles.editor, { height: '100%' }],
-            }}
           />
         ) : (
           <View style={styles.editorPlaceholder}>
@@ -302,6 +301,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,

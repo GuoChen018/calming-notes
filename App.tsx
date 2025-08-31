@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from './src/hooks/useFonts';
 import { useSettingsStore } from './src/store/settingsStore';
@@ -29,13 +28,9 @@ export default function App() {
     }
   }, [fontsLoaded]);
 
-  // Show loading screen while fonts are loading
+  // Just wait for fonts to load, then show the app immediately
   if (!fontsLoaded) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
-        <ActivityIndicator size="large" color="#007bff" />
-      </View>
-    );
+    return null; // Let Expo's built-in splash show
   }
 
   const handleNotePress = (noteId: string) => {

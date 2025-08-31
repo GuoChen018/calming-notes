@@ -20,7 +20,7 @@ interface NotesState {
 export const useNotesStore = create<NotesState>((set, get) => ({
   notes: [],
   currentNote: null,
-  isLoading: false,
+  isLoading: true,
   error: null,
 
   loadNotes: async () => {
