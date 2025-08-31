@@ -22,6 +22,7 @@ export default function SimpleEditor({
   const [text, setText] = useState('');
   const [isReady, setIsReady] = useState(false);
   const textInputRef = useRef<TextInput>(null);
+  const initializedRef = useRef(false);
   const { colors, typography, fontSize } = useTheme();
 
   const handleOutsidePress = () => {
@@ -101,14 +102,21 @@ export default function SimpleEditor({
     });
   };
 
-  // Initialize content
+  // Initialize content only once when component mounts
   useEffect(() => {
-    const initialText = convertToText(content);
-    setText(initialText);
-    setIsReady(true);
-    
-    if (onReady) {
-      setTimeout(() => onReady(), 100);
+    if (!initializedRef.current) {
+      const initialText = convertToText(content);
+      setText(initialText);
+      setIsReady(true);
+      initializedRef.current = true;
+      
+      if (onReady) {
+        setTimeout(() => {
+          onReady();
+          // Focus the input after initialization
+          textInputRef.current?.focus();
+        }, 100);
+      }
     }
   }, [content, onReady]);
 
@@ -158,7 +166,6 @@ export default function SimpleEditor({
                 placeholderTextColor={colors.text.secondary}
                 multiline
                 textAlignVertical="top"
-                autoFocus
               />
             </View>
           </TouchableWithoutFeedback>
