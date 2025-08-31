@@ -39,8 +39,8 @@ export const colors = {
     surfaceSecondary: '#4a5568',
     
     text: {
-      primary: '#f7fafc',
-      secondary: '#e2e8f0',
+      primary: '#e2e8f0',   // Softer white for less harsh contrast
+      secondary: '#cbd5e0',  // Slightly brighter secondary text
       muted: '#a0aec0',
     },
     
@@ -53,9 +53,9 @@ export const colors = {
     },
     
     border: {
-      light: '#4a5568',
-      medium: '#718096',
-      dark: '#a0aec0',
+      light: '#2d3748',     // Much softer border, closer to surface color
+      medium: '#4a5568',    // Moved previous light to medium
+      dark: '#718096',      // Adjusted accordingly
     },
     
     editor: {
