@@ -3,6 +3,7 @@ import {
   View,
   TextInput,
   StyleSheet,
+  ScrollView,
 } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 
@@ -137,24 +138,26 @@ export default function SimpleEditor({
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <TextInput
-        ref={textInputRef}
-        style={[
-          styles.textInput,
-          {
-            fontFamily: typography.fonts.regular,
-            fontSize: fontSize,
-            color: colors.text.primary,
-          }
-        ]}
-        value={text}
-        onChangeText={handleTextChange}
-        placeholder="Start writing..."
-        placeholderTextColor={colors.text.secondary}
-        multiline
-        textAlignVertical="top"
-        autoFocus
-      />
+      <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
+        <TextInput
+          ref={textInputRef}
+          style={[
+            styles.textInput,
+            {
+              fontFamily: typography.fonts.regular,
+              fontSize: fontSize,
+              color: colors.text.primary,
+            }
+          ]}
+          value={text}
+          onChangeText={handleTextChange}
+          placeholder="Start writing..."
+          placeholderTextColor={colors.text.secondary}
+          multiline
+          textAlignVertical="top"
+          autoFocus
+        />
+      </ScrollView>
     </View>
   );
 }
@@ -163,8 +166,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  textInput: {
+  scrollView: {
     flex: 1,
+  },
+  textInput: {
     padding: 16,
+    minHeight: 500, // Ensure minimum height for tapping
   },
 });
