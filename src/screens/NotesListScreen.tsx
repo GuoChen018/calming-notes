@@ -176,7 +176,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.surface }]}>
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
         <Text style={[styles.title, { 
           fontFamily: typography.fonts.regular, 
           color: colors.text.primary 
@@ -195,7 +195,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       {/* Search and Notes Container */}
       <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={[styles.contentContainer, { 
-          backgroundColor: colors.surface,
+          backgroundColor: colors.background,
           borderColor: colors.border.light 
         }]}>
           {/* Search */}
@@ -213,7 +213,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                   <TextInput
                     ref={searchInputRef}
                     style={[styles.searchInput, { 
-                      backgroundColor: colors.surface,
+                      backgroundColor: colors.background,
                       color: colors.text.primary,
                       fontFamily: typography.fonts.regular,
                       fontSize: fontSize,
