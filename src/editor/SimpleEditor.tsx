@@ -152,6 +152,7 @@ export default function SimpleEditor({
                   {
                     fontFamily: typography.fonts.regular,
                     fontSize: fontSize,
+                    lineHeight: fontSize * 1.75, // Dynamic line height based on font size
                     color: colors.text.primary,
                   }
                 ]}
@@ -180,7 +181,6 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     padding: 16,
-    lineHeight: 28,
     minHeight: '100%',
   },
 
