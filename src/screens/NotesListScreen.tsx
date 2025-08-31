@@ -40,6 +40,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [isSearchMode, setIsSearchMode] = useState(false);
   const searchInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -54,10 +55,14 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   // Debounced search function
   const debouncedSearch = useDebounce(async (query: string) => {
     await searchNotes(query);
+    // Update search mode after search completes
+    setIsSearchMode(query.trim().length > 0);
   }, 300);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    // Set search mode based on whether there's any query
+    setIsSearchMode(query.trim().length > 0);
     debouncedSearch(query);
   };
 
@@ -260,11 +265,11 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
               }]}>
                 {searchQuery ? 'No notes found' : 'No notes yet'}
               </Text>
-              {!searchQuery && !isLoading && (
-                <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-                  <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
-                </TouchableOpacity>
-              )}
+                          {!searchQuery && !isSearchMode && !isLoading && (
+              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
+                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
+              </TouchableOpacity>
+            )}
             </View>
           )}
         </View>
