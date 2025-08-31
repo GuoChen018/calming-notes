@@ -4,7 +4,7 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  PanResponder,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 
@@ -24,21 +24,9 @@ export default function SimpleEditor({
   const textInputRef = useRef<TextInput>(null);
   const { colors, typography, fontSize } = useTheme();
 
-  // Pan responder for swipe gestures
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Detect left swipe: dx < -50 and moving more horizontally than vertically
-        return gestureState.dx < -50 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // Blur the text input on left swipe
-        if (gestureState.dx < -50) {
-          textInputRef.current?.blur();
-        }
-      },
-    })
-  ).current;
+  const handleOutsidePress = () => {
+    textInputRef.current?.blur();
+  };
 
   // Convert JSON content to plain text
   const convertToText = (jsonContent: string): string => {
@@ -149,33 +137,34 @@ export default function SimpleEditor({
 
 
   return (
-    <View 
-      style={[styles.container, { backgroundColor: colors.background }]}
-      {...panResponder.panHandlers}
-    >
-      <ScrollView style={styles.editorContainer}>
-        <TextInput
-          ref={textInputRef}
-          style={[
-            styles.textInput,
-            {
-              fontFamily: typography.fonts.regular,
-              fontSize: fontSize,
-              color: colors.text.primary,
-            }
-          ]}
-          value={text}
-          onChangeText={handleTextChange}
-
-          placeholder="Start writing..."
-          placeholderTextColor={colors.text.secondary}
-          multiline
-          textAlignVertical="top"
-          autoFocus
-        />
-      </ScrollView>
-
-    </View>
+    <TouchableWithoutFeedback onPress={handleOutsidePress}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <ScrollView style={styles.editorContainer}>
+          <TouchableWithoutFeedback onPress={() => textInputRef.current?.focus()}>
+            <View>
+              <TextInput
+                ref={textInputRef}
+                style={[
+                  styles.textInput,
+                  {
+                    fontFamily: typography.fonts.regular,
+                    fontSize: fontSize,
+                    color: colors.text.primary,
+                  }
+                ]}
+                value={text}
+                onChangeText={handleTextChange}
+                placeholder="Start writing..."
+                placeholderTextColor={colors.text.secondary}
+                multiline
+                textAlignVertical="top"
+                autoFocus
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
