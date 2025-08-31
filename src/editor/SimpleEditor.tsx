@@ -11,13 +11,11 @@ import { useTheme } from '../hooks/useTheme';
 interface SimpleEditorProps {
   content?: string;
   onUpdate?: (content: string) => Promise<void>;
-  onReady?: () => void;
 }
 
 export default function SimpleEditor({ 
   content = '', 
   onUpdate,
-  onReady,
 }: SimpleEditorProps) {
   const [text, setText] = useState('');
   const [isReady, setIsReady] = useState(false);
@@ -110,15 +108,12 @@ export default function SimpleEditor({
       setIsReady(true);
       initializedRef.current = true;
       
-      if (onReady) {
-        setTimeout(() => {
-          onReady();
-          // Focus the input after initialization
-          textInputRef.current?.focus();
-        }, 100);
-      }
+      // Focus the input after initialization
+      setTimeout(() => {
+        textInputRef.current?.focus();
+      }, 100);
     }
-  }, [content, onReady]);
+  }, [content]);
 
 
 

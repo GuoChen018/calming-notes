@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
-  Animated,
 } from 'react-native';
 import SimpleEditor from '../editor/SimpleEditor';
 import { useNotesStore } from '../store/notesStore';
@@ -34,22 +33,6 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   const { colors, typography } = useTheme();
   const { fontsLoaded } = useFonts();
-  const [editorReady, setEditorReady] = useState(false);
-
-
-
-  const editorRef = useRef<any>(null);
-  
-  // Animation for smooth fade-in
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  
-  // Reset animation on mount
-  useEffect(() => {
-    fadeAnim.setValue(0);
-    setEditorReady(false);
-  }, [fadeAnim]);
-
-
 
   // Debounced save function (750ms delay)
   const debouncedSave = useDebounce(async (content: string) => {
@@ -64,29 +47,9 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
   useEffect(() => {
     if (noteId) {
-      // Reset animation when loading a new note
-      fadeAnim.setValue(0);
-      setEditorReady(false);
       loadNote(noteId);
     }
-  }, [noteId, loadNote, fadeAnim]);
-
-  // Fade in animation when editor is ready
-  useEffect(() => {
-    if (editorReady) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [editorReady, fadeAnim]);
-
-
-
-  const handleEditorReady = () => {
-    setEditorReady(true);
-  };
+  }, [noteId, loadNote]);
 
 
 
@@ -215,7 +178,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
       </View>
 
       {/* Editor */}
-      <Animated.View style={[styles.editorContainer, { opacity: fadeAnim }]}>
+      <View style={styles.editorContainer}>
         {!fontsLoaded ? (
           <View style={styles.editorPlaceholder}>
             <ActivityIndicator size="small" color={colors.accent.primary} />
@@ -230,14 +193,13 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
           <SimpleEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}
-            onReady={handleEditorReady}
           />
         ) : (
           <View style={styles.editorPlaceholder}>
             <ActivityIndicator size="small" color={colors.accent.primary} />
           </View>
         )}
-      </Animated.View>
+      </View>
     </View>
   );
 }
