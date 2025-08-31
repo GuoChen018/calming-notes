@@ -9,11 +9,11 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
-  Keyboard,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { useTheme } from '../hooks/useTheme';
+import { useDebounce } from '../hooks/useDebounce';
 import { NotePreview } from '../services/db';
 import Icon from '../components/Icon';
 
@@ -49,19 +49,16 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     });
   }, [loadNotes]);
 
-  useEffect(() => {
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      searchInputRef.current?.blur();
-    });
 
-    return () => {
-      keyboardDidHideListener?.remove();
-    };
-  }, []);
+
+  // Debounced search function
+  const debouncedSearch = useDebounce(async (query: string) => {
+    await searchNotes(query);
+  }, 300);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    searchNotes(query);
+    debouncedSearch(query);
   };
 
   const handleNewNote = async () => {

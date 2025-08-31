@@ -21,7 +21,7 @@ export default function SimpleEditor({
   const [text, setText] = useState('');
   const [isReady, setIsReady] = useState(false);
   const textInputRef = useRef<TextInput>(null);
-  const { colors, typography } = useTheme();
+  const { colors, typography, fontSize } = useTheme();
 
   // Convert JSON content to plain text
   const convertToText = (jsonContent: string): string => {
@@ -140,7 +140,7 @@ export default function SimpleEditor({
             styles.textInput,
             {
               fontFamily: typography.fonts.regular,
-              fontSize: typography.sizes.lg,
+              fontSize: fontSize,
               color: colors.text.primary,
             }
           ]}

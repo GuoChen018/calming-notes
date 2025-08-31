@@ -115,16 +115,16 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   },
 
   searchNotes: async (query: string) => {
-    set({ isLoading: true, error: null });
+    // Don't set isLoading during search to prevent focus loss in search input
+    set({ error: null });
     try {
       const notes = query.trim() 
         ? await db.searchNotes(query)
         : await db.getAllNotes();
-      set({ notes, isLoading: false });
+      set({ notes });
     } catch (error) {
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to search notes',
-        isLoading: false 
+        error: error instanceof Error ? error.message : 'Failed to search notes'
       });
     }
   },
