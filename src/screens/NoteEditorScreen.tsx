@@ -179,17 +179,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
 
       {/* Editor */}
       <View style={styles.editorContainer}>
-        {!fontsLoaded ? (
-          <View style={styles.editorPlaceholder}>
-            <ActivityIndicator size="small" color={colors.accent.primary} />
-            <Text style={[styles.loadingText, { 
-              fontFamily: typography.fonts.regular,
-              color: colors.text.secondary 
-            }]}>
-              Loading fonts...
-            </Text>
-          </View>
-        ) : currentNote && currentNote.content_json ? (
+        {currentNote && currentNote.content_json ? (
           <SimpleEditor
             content={currentNote.content_json}
             onUpdate={handleContentChange}

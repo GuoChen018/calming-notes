@@ -3,8 +3,6 @@ import {
   View,
   TextInput,
   StyleSheet,
-  ScrollView,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 
@@ -23,9 +21,7 @@ export default function SimpleEditor({
   const initializedRef = useRef(false);
   const { colors, typography, fontSize } = useTheme();
 
-  const handleOutsidePress = () => {
-    textInputRef.current?.blur();
-  };
+
 
   // Convert JSON content to plain text
   const convertToText = (jsonContent: string): string => {
@@ -140,34 +136,26 @@ export default function SimpleEditor({
 
 
   return (
-    <TouchableWithoutFeedback onPress={handleOutsidePress}>
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <ScrollView style={styles.editorContainer}>
-          <TouchableWithoutFeedback onPress={() => textInputRef.current?.focus()}>
-            <View>
-              <TextInput
-                ref={textInputRef}
-                style={[
-                  styles.textInput,
-                  {
-                    fontFamily: typography.fonts.regular,
-                    fontSize: fontSize,
-                    lineHeight: fontSize * 1.75, // Dynamic line height based on font size
-                    color: colors.text.primary,
-                  }
-                ]}
-                value={text}
-                onChangeText={handleTextChange}
-                placeholder="Start writing..."
-                placeholderTextColor={colors.text.secondary}
-                multiline
-                textAlignVertical="top"
-              />
-            </View>
-          </TouchableWithoutFeedback>
-        </ScrollView>
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <TextInput
+        ref={textInputRef}
+        style={[
+          styles.textInput,
+          {
+            fontFamily: typography.fonts.regular,
+            fontSize: fontSize,
+            color: colors.text.primary,
+          }
+        ]}
+        value={text}
+        onChangeText={handleTextChange}
+        placeholder="Start writing..."
+        placeholderTextColor={colors.text.secondary}
+        multiline
+        textAlignVertical="top"
+        autoFocus
+      />
+    </View>
   );
 }
 
@@ -175,13 +163,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  editorContainer: {
-    flex: 1,
-  },
   textInput: {
     flex: 1,
     padding: 16,
-    minHeight: '100%',
   },
-
 });
