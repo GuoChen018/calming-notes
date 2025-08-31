@@ -192,7 +192,7 @@ export default function NoteEditorScreen({ noteId, onBack }: NoteEditorScreenPro
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border.light }]}>
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <View style={styles.buttonContent}>
             <Icon name="arrow-left" size={16} color="#4D5461" />
@@ -253,7 +253,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 60,
     paddingBottom: 16,
-    borderBottomWidth: 1,
   },
   backButton: {
     paddingVertical: 8,
