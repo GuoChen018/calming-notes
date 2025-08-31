@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
+  PanResponder,
 } from 'react-native';
 import { useTheme } from '../hooks/useTheme';
 
@@ -22,6 +23,22 @@ export default function SimpleEditor({
   const [isReady, setIsReady] = useState(false);
   const textInputRef = useRef<TextInput>(null);
   const { colors, typography, fontSize } = useTheme();
+
+  // Pan responder for swipe gestures
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Detect left swipe: dx < -50 and moving more horizontally than vertically
+        return gestureState.dx < -50 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // Blur the text input on left swipe
+        if (gestureState.dx < -50) {
+          textInputRef.current?.blur();
+        }
+      },
+    })
+  ).current;
 
   // Convert JSON content to plain text
   const convertToText = (jsonContent: string): string => {
@@ -132,7 +149,10 @@ export default function SimpleEditor({
 
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View 
+      style={[styles.container, { backgroundColor: colors.background }]}
+      {...panResponder.panHandlers}
+    >
       <ScrollView style={styles.editorContainer}>
         <TextInput
           ref={textInputRef}

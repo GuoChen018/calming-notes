@@ -9,6 +9,7 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
+  PanResponder,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -42,6 +43,22 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   const [initialLoad, setInitialLoad] = useState(true);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const searchInputRef = useRef<TextInput>(null);
+
+  // Pan responder for swipe gestures on search
+  const searchPanResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Detect left swipe: dx < -50 and moving more horizontally than vertically
+        return gestureState.dx < -50 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        // Blur the search input on left swipe
+        if (gestureState.dx < -50) {
+          searchInputRef.current?.blur();
+        }
+      },
+    })
+  ).current;
 
   useEffect(() => {
     loadNotes().finally(() => {
@@ -194,7 +211,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           borderColor: colors.border.light 
         }]}>
           {/* Search */}
-          <View style={styles.searchContainer}>
+          <View 
+            style={styles.searchContainer}
+            {...searchPanResponder.panHandlers}
+          >
             <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
               <View style={styles.searchIcon}>
                 <Icon 
