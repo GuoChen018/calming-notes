@@ -20,7 +20,7 @@ export default function SimpleEditor({
   const [isReady, setIsReady] = useState(false);
   const textInputRef = useRef<TextInput>(null);
   const initializedRef = useRef(false);
-  const { colors, typography, fontSize } = useTheme();
+  const { colors, typography, fontSize, isDark } = useTheme();
 
 
 

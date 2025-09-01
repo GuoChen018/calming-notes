@@ -301,6 +301,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                     value={searchQuery}
                     onChangeText={handleSearch}
                     placeholderTextColor="#A2ADC2"
+                    cursorColor={isDark ? '#ffffff' : '#121212'}
                   />
                 </View>
               </TouchableWithoutFeedback>
