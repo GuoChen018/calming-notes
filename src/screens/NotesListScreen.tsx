@@ -272,119 +272,129 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         </Animated.View>
       </View>
 
-      {/* Search and Notes Container */}
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-        <View style={[styles.contentContainer, { 
-          backgroundColor: colors.background,
-          borderColor: colors.border.light 
-        }]}>
-          {/* Search */}
-          <TouchableWithoutFeedback onPress={handleSearchBlur}>
-            <View style={styles.searchContainer}>
-              <TouchableWithoutFeedback onPress={() => searchInputRef.current?.focus()}>
-                <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
-                  <View style={styles.searchIcon}>
-                    <Icon 
-                      name="search" 
-                      size={16} 
-                      color="#A2ADC2" 
+      {/* Search and Notes Container - only show if there are notes or search query */}
+      {(notes.length > 0 || searchQuery) && (
+        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <View style={[styles.contentContainer, { 
+            backgroundColor: colors.background,
+            borderColor: colors.border.light 
+          }]}>
+            {/* Search */}
+            <TouchableWithoutFeedback onPress={handleSearchBlur}>
+              <View style={styles.searchContainer}>
+                <TouchableWithoutFeedback onPress={() => searchInputRef.current?.focus()}>
+                  <View style={[styles.searchInputContainer, { borderBottomColor: colors.border.light }]}>
+                    <View style={styles.searchIcon}>
+                      <Icon 
+                        name="search" 
+                        size={16} 
+                        color="#A2ADC2" 
+                      />
+                    </View>
+                    <TextInput
+                      ref={searchInputRef}
+                      style={[styles.searchInput, { 
+                        backgroundColor: colors.background,
+                        color: colors.text.primary,
+                        fontFamily: typography.fonts.regular,
+                        fontSize: fontSize,
+                      }]}
+                      placeholder="Search note"
+                      value={searchQuery}
+                      onChangeText={handleSearch}
+                      placeholderTextColor="#A2ADC2"
+                      cursorColor={isDark ? '#ffffff' : '#121212'}
                     />
                   </View>
-                  <TextInput
-                    ref={searchInputRef}
-                    style={[styles.searchInput, { 
-                      backgroundColor: colors.background,
+                </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+
+            {/* Notes List */}
+            {notes.map((item, index) => {
+              const isSelected = selectedNotes.includes(item.id);
+              return (
+                <React.Fragment key={item.id}>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.noteItem, 
+                      { 
+                        backgroundColor: isSelected 
+                          ? colors.text.primary + '08' 
+                          : pressed 
+                          ? colors.text.primary + '05' 
+                          : colors.background,
+                      }
+                    ]}
+                    onPress={() => handleNotePress(item.id)}
+                    onLongPress={() => handleNoteLongPress(item.id)}
+                    delayLongPress={500}
+                  >
+                  <View style={styles.noteContent}>
+                    <Text style={[styles.notePreview, { 
                       color: colors.text.primary,
                       fontFamily: typography.fonts.regular,
                       fontSize: fontSize,
-                    }]}
-                    placeholder="Search note"
-                    value={searchQuery}
-                    onChangeText={handleSearch}
-                    placeholderTextColor="#A2ADC2"
-                    cursorColor={isDark ? '#ffffff' : '#121212'}
-                  />
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-
-          {/* Notes List */}
-          {notes.map((item, index) => {
-            const isSelected = selectedNotes.includes(item.id);
-            return (
-              <React.Fragment key={item.id}>
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.noteItem, 
-                    { 
-                      backgroundColor: isSelected 
-                        ? colors.text.primary + '08' 
-                        : pressed 
-                        ? colors.text.primary + '05' 
-                        : colors.background,
-                    }
-                  ]}
-                  onPress={() => handleNotePress(item.id)}
-                  onLongPress={() => handleNoteLongPress(item.id)}
-                  delayLongPress={500}
-                >
-                <View style={styles.noteContent}>
-                  <Text style={[styles.notePreview, { 
-                    color: colors.text.primary,
-                    fontFamily: typography.fonts.regular,
-                    fontSize: fontSize,
-                  }]} numberOfLines={2}>
-                    {item.preview}
-                  </Text>
-                  <Text style={[styles.noteDate, { 
-                    color: colors.text.secondary,
-                    fontFamily: typography.fonts.regular,
-                    fontSize: fontSize * 0.9,
-                  }]}>
-                    {formatDate(item.updated_at)}
-                  </Text>
-                </View>
-              </Pressable>
-              {index < notes.length - 1 && (
-                <View style={[styles.noteSeparator, { backgroundColor: colors.border.light }]} />
-              )}
-              </React.Fragment>
-            );
-          })}
-          
-          {notes.length === 0 && (
-            <View style={styles.emptyState}>
-              {searchQuery ? (
+                    }]} numberOfLines={2}>
+                      {item.preview}
+                    </Text>
+                    <Text style={[styles.noteDate, { 
+                      color: colors.text.secondary,
+                      fontFamily: typography.fonts.regular,
+                      fontSize: fontSize * 0.9,
+                    }]}>
+                      {formatDate(item.updated_at)}
+                    </Text>
+                  </View>
+                </Pressable>
+                {index < notes.length - 1 && (
+                  <View style={[styles.noteSeparator, { backgroundColor: colors.border.light }]} />
+                )}
+                </React.Fragment>
+              );
+            })}
+            
+            {/* Search Results Empty State */}
+            {searchQuery && notes.length === 0 && (
+              <View style={styles.searchEmptyState}>
                 <Icon 
                   name="cat" 
                   size={100} 
                   color="#A2ADC2" 
                 />
-              ) : (
-                <Image 
-                  source={isDark ? require('../../assets/app-icons/ios-dark.png') : require('../../assets/app-icons/ios-light.png')}
-                  style={styles.appIcon}
-                />
-              )}
-              <Text style={[styles.emptyTitle, { 
-                fontFamily: typography.fonts.regular,
-                color: colors.text.primary 
-              }]}>
-                {searchQuery ? 'No notes found' : 'No notes created'}
-              </Text>
-              {!searchQuery && (
-                <Text style={[styles.emptySubtitle, { 
+                <Text style={[styles.emptyTitle, { 
                   fontFamily: typography.fonts.regular,
-                  color: colors.text.secondary 
+                  color: colors.text.primary 
                 }]}>
-                  Create your first note
+                  No notes found
                 </Text>
-              )}
-            </View>
-          )}
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      )}
+
+      {/* Full Screen Empty State - only show when no notes and no search */}
+      {notes.length === 0 && !searchQuery && (
+        <View style={styles.fullScreenEmptyState}>
+          <Image 
+            source={isDark ? require('../../assets/app-icons/ios-dark.png') : require('../../assets/app-icons/ios-light.png')}
+            style={styles.appIcon}
+          />
+          <Text style={[styles.emptyTitle, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.text.primary 
+          }]}>
+            No notes created
+          </Text>
+          <Text style={[styles.emptySubtitle, { 
+            fontFamily: typography.fonts.regular,
+            color: colors.text.secondary 
+          }]}>
+            Create your first note
+          </Text>
         </View>
-      </ScrollView>
+      )}
       
       {/* Floating Action Button */}
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
@@ -523,6 +533,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 40,
     paddingVertical: 40,
+  },
+  fullScreenEmptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  searchEmptyState: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+    paddingVertical: 60,
   },
   appIcon: {
     width: 120,
