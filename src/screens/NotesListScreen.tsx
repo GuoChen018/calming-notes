@@ -342,7 +342,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                   { 
                     backgroundColor: isSelected ? colors.text.primary + '08' : colors.background,
                     borderBottomColor: colors.border.light,
-                    borderBottomWidth: index === notes.length - 1 ? 0 : 1,
+                    borderBottomWidth: index === 0 ? 1 : (index === notes.length - 1 ? 0 : 1),
                   }
                 ]}
                 onPress={() => handleNotePress(item.id)}
@@ -492,7 +492,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 6,
-    borderBottomWidth: 1,
   },
   searchIcon: {
     marginRight: 12,
