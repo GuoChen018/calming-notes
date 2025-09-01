@@ -313,10 +313,14 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
             return (
               <React.Fragment key={item.id}>
                 <Pressable
-                  style={[
+                  style={({ pressed }) => [
                     styles.noteItem, 
                     { 
-                      backgroundColor: isSelected ? colors.text.primary + '08' : colors.background,
+                      backgroundColor: isSelected 
+                        ? colors.text.primary + '08' 
+                        : pressed 
+                        ? colors.text.primary + '05' 
+                        : colors.background,
                     }
                   ]}
                   onPress={() => handleNotePress(item.id)}
