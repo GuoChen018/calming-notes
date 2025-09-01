@@ -454,7 +454,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 5,
     marginBottom: 20,
-    borderWidth: 1,
   },
   themeButton: {
     padding: 8,
