@@ -340,7 +340,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                 style={[
                   styles.noteItem, 
                   { 
-                    backgroundColor: isSelected ? colors.accent.primary + '20' : colors.background,
+                    backgroundColor: isSelected ? colors.text.primary + '08' : colors.background,
                     borderBottomColor: colors.border.light,
                     borderBottomWidth: index === notes.length - 1 ? 0 : 1,
                   }
