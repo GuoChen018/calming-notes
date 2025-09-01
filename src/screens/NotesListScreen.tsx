@@ -310,38 +310,40 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           {notes.map((item, index) => {
             const isSelected = selectedNotes.includes(item.id);
             return (
-              <TouchableOpacity
-                key={item.id}
-                style={[
-                  styles.noteItem, 
-                  { 
-                    backgroundColor: isSelected ? colors.text.primary + '08' : colors.background,
-                    borderBottomColor: colors.border.light,
-                    borderBottomWidth: index === notes.length - 1 ? 0 : 1,
-                  }
-                ]}
-                onPress={() => handleNotePress(item.id)}
-                onLongPress={() => handleNoteLongPress(item.id)}
-                delayLongPress={500}
-              >
-              <View style={styles.noteContent}>
-                <Text style={[styles.notePreview, { 
-                  color: colors.text.primary,
-                  fontFamily: typography.fonts.regular,
-                  fontSize: fontSize,
-                }]} numberOfLines={2}>
-                  {item.preview}
-                </Text>
-                <Text style={[styles.noteDate, { 
-                  color: colors.text.secondary,
-                  fontFamily: typography.fonts.regular,
-                  fontSize: fontSize * 0.9,
-                }]}>
-                  {formatDate(item.updated_at)}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          );
+              <React.Fragment key={item.id}>
+                <TouchableOpacity
+                  style={[
+                    styles.noteItem, 
+                    { 
+                      backgroundColor: isSelected ? colors.text.primary + '08' : colors.background,
+                    }
+                  ]}
+                  onPress={() => handleNotePress(item.id)}
+                  onLongPress={() => handleNoteLongPress(item.id)}
+                  delayLongPress={500}
+                >
+                <View style={styles.noteContent}>
+                  <Text style={[styles.notePreview, { 
+                    color: colors.text.primary,
+                    fontFamily: typography.fonts.regular,
+                    fontSize: fontSize,
+                  }]} numberOfLines={2}>
+                    {item.preview}
+                  </Text>
+                  <Text style={[styles.noteDate, { 
+                    color: colors.text.secondary,
+                    fontFamily: typography.fonts.regular,
+                    fontSize: fontSize * 0.9,
+                  }]}>
+                    {formatDate(item.updated_at)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              {index < notes.length - 1 && (
+                <View style={[styles.noteSeparator, { backgroundColor: colors.border.light }]} />
+              )}
+              </React.Fragment>
+            );
           })}
           
           {notes.length === 0 && (
@@ -492,6 +494,10 @@ const styles = StyleSheet.create({
   },
   noteDate: {
     fontSize: 12,
+  },
+  noteSeparator: {
+    height: 1,
+    marginHorizontal: 20,
   },
   emptyContainer: {
     flex: 1,
