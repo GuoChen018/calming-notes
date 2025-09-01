@@ -180,31 +180,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     }
   };
 
-  const renderNoteItem = ({ item }: { item: NotePreview }) => (
-    <TouchableOpacity
-      style={[styles.noteItem, { 
-        backgroundColor: colors.background,
-      }]}
-      onPress={() => onNotePress(item.id)}
-      onLongPress={() => handleDeleteNote(item.id, item.preview)}
-    >
-      <View style={styles.noteContent}>
-        <Text style={[styles.notePreview, { 
-          color: colors.text.primary,
-          fontFamily: typography.fonts.regular,
-          fontSize: fontSize,
-        }]} numberOfLines={2}>
-          {item.preview}
-        </Text>
-        <Text style={[styles.noteDate, { 
-          color: colors.text.secondary,
-          fontFamily: typography.fonts.regular,
-        }]}>
-          {formatDate(item.updated_at)}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+
 
   if (error && !isLoading) {
     return (
