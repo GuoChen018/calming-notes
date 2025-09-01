@@ -497,7 +497,6 @@ const styles = StyleSheet.create({
   },
   noteSeparator: {
     height: 1,
-    marginHorizontal: 20,
   },
   emptyContainer: {
     flex: 1,
