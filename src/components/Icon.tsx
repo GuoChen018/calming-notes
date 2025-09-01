@@ -23,6 +23,8 @@ import EditIcon from '../../assets/icons/rounded/edit.svg';
 import IndentLeftIcon from '../../assets/icons/rounded/indent-left.svg';
 import IndentRightIcon from '../../assets/icons/rounded/indent-right.svg';
 import PandaIcon from '../../assets/icons/rounded/panda.svg';
+import IconDarkSvg from '../../assets/app-icons/in-app/icon-dark.svg';
+import IconLightSvg from '../../assets/app-icons/in-app/icon-light.svg';
 
 interface IconProps {
   name: string;
@@ -55,6 +57,8 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     'indent-right': IndentRightIcon,
     panda: PandaIcon,
     cat: PandaIcon, // Legacy support - map cat to panda
+    'icon-dark': IconDarkSvg,
+    'icon-light': IconLightSvg,
   };
 
   const IconComponent = iconComponents[name];
