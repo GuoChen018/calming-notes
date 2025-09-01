@@ -31,6 +31,7 @@ export interface NotePreview {
 
 class DatabaseService {
   private db: SQLite.SQLiteDatabase | null = null;
+  private deletedNotes: Map<string, Note> = new Map(); // Temporary storage for undo
 
   async init() {
     if (this.db) return;
@@ -188,7 +189,50 @@ class DatabaseService {
     await this.init();
     if (!this.db) throw new Error('Database not initialized');
 
+    // First store the note for potential undo
+    const noteToDelete = await this.getNote(id);
+    if (noteToDelete) {
+      this.deletedNotes.set(id, noteToDelete);
+    }
+
     await this.db.runAsync('DELETE FROM notes WHERE id = ?', [id]);
+  }
+
+  async restoreNote(id: string): Promise<Note | null> {
+    await this.init();
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const noteToRestore = this.deletedNotes.get(id);
+    if (!noteToRestore) return null;
+
+    await this.db.runAsync(
+      'INSERT INTO notes (id, content_json, created_at, updated_at) VALUES (?, ?, ?, ?)',
+      [noteToRestore.id, noteToRestore.content_json, noteToRestore.created_at, noteToRestore.updated_at]
+    );
+    
+    this.deletedNotes.delete(id);
+    return noteToRestore;
+  }
+
+  async restoreMultipleNotes(noteIds: string[]): Promise<Note[]> {
+    const restoredNotes: Note[] = [];
+    
+    for (const id of noteIds) {
+      try {
+        const restored = await this.restoreNote(id);
+        if (restored) {
+          restoredNotes.push(restored);
+        }
+      } catch (error) {
+        console.error(`Failed to restore note ${id}:`, error);
+      }
+    }
+    
+    return restoredNotes;
+  }
+
+  clearDeletedNotes(): void {
+    this.deletedNotes.clear();
   }
 
   async searchNotes(query: string): Promise<NotePreview[]> {

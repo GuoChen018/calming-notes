@@ -23,6 +23,7 @@ interface NotesState {
   selectNote: (noteId: string) => void;
   clearSelection: () => void;
   deleteSelectedNotes: () => Promise<number>;
+  undoDelete: (noteIds: string[]) => Promise<void>;
 }
 
 export const useNotesStore = create<NotesState>((set, get) => ({
@@ -192,6 +193,19 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     } catch (error) {
       set({ 
         error: error instanceof Error ? error.message : 'Failed to delete notes'
+      });
+      throw error;
+    }
+  },
+
+  undoDelete: async (noteIds: string[]) => {
+    try {
+      await db.restoreMultipleNotes(noteIds);
+      const notes = await db.getAllNotes();
+      set({ notes });
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to undo deletion'
       });
       throw error;
     }

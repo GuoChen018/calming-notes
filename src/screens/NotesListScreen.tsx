@@ -18,6 +18,7 @@ import { useTheme } from '../hooks/useTheme';
 import { useDebounce } from '../hooks/useDebounce';
 import { NotePreview } from '../services/db';
 import Icon from '../components/Icon';
+import Toast from '../components/Toast';
 
 interface NotesListScreenProps {
   onNotePress: (noteId: string) => void;
@@ -40,6 +41,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     selectNote,
     clearSelection,
     deleteSelectedNotes,
+    undoDelete,
   } = useNotesStore();
 
   const { toggleTheme } = useSettingsStore();
@@ -48,6 +50,9 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [deletedNotes, setDeletedNotes] = useState<NotePreview[]>([]);
   const searchInputRef = useRef<TextInput>(null);
   const selectionBarOpacity = useRef(new Animated.Value(0)).current;
   
@@ -109,12 +114,35 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
 
   const handleDeleteSelected = async () => {
     try {
+      // Store deleted notes for undo functionality
+      const notesToDelete = notes.filter(note => selectedNotes.includes(note.id));
+      setDeletedNotes(notesToDelete);
+      
       const deletedCount = await deleteSelectedNotes();
-      // TODO: Show toast with undo option
-      console.log(`${deletedCount} notes deleted`);
+      
+      // Show toast with undo option
+      const message = `${deletedCount} note${deletedCount !== 1 ? 's' : ''} deleted`;
+      setToastMessage(message);
+      setToastVisible(true);
     } catch (error) {
       Alert.alert('Error', 'Failed to delete notes');
     }
+  };
+
+  const handleUndoDelete = async () => {
+    try {
+      const noteIds = deletedNotes.map(note => note.id);
+      await undoDelete(noteIds);
+      setToastVisible(false);
+      setDeletedNotes([]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to undo deletion');
+    }
+  };
+
+  const handleToastDismiss = () => {
+    setToastVisible(false);
+    setDeletedNotes([]);
   };
 
   const handleDeleteNote = (noteId: string, notePreview: string) => {
@@ -369,6 +397,16 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       <TouchableOpacity style={styles.fab} onPress={handleNewNote}>
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
+
+      {/* Toast */}
+      <Toast
+        visible={toastVisible}
+        message={toastMessage}
+        actionText="Undo"
+        onActionPress={handleUndoDelete}
+        onDismiss={handleToastDismiss}
+        duration={8000}
+      />
     </View>
   );
 }
