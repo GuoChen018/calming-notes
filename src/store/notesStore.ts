@@ -22,7 +22,7 @@ interface NotesState {
   toggleNoteSelection: (noteId: string) => void;
   selectNote: (noteId: string) => void;
   clearSelection: () => void;
-  deleteSelectedNotes: () => Promise<void>;
+  deleteSelectedNotes: () => Promise<number>;
 }
 
 export const useNotesStore = create<NotesState>((set, get) => ({

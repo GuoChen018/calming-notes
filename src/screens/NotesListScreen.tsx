@@ -337,7 +337,8 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                 </Text>
               </View>
             </TouchableOpacity>
-          ))}
+          );
+          })}
           
           {notes.length === 0 && (
             <View style={styles.emptyState}>
