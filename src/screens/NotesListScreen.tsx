@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Pressable,
+  Image,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -515,10 +516,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     paddingVertical: 40,
   },
-  emptyText: {
-    fontSize: 18,
+  appIcon: {
+    width: 120,
+    height: 120,
+    marginBottom: 32,
+  },
+  emptyTitle: {
+    fontSize: 24,
     textAlign: 'center',
-    marginTop: 8,
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   createFirstButton: {
     paddingHorizontal: 24,
