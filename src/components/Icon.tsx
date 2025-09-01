@@ -30,9 +30,10 @@ interface IconProps {
   name: string;
   size?: number;
   color?: string;
+  style?: any;
 }
 
-export default function Icon({ name, size = 24, color = '#697180' }: IconProps) {
+export default function Icon({ name, size = 24, color = '#697180', style }: IconProps) {
   const iconComponents: Record<string, React.ComponentType<any>> = {
     sun: SunIcon,
     moon: MoonIcon,
@@ -67,5 +68,5 @@ export default function Icon({ name, size = 24, color = '#697180' }: IconProps) 
     return null;
   }
 
-  return <IconComponent width={size} height={size} style={{ color }} />;
+  return <IconComponent width={size} height={size} style={[{ color }, style]} />;
 }
