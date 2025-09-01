@@ -5,6 +5,7 @@ import { useFonts } from './src/hooks/useFonts';
 import { useSettingsStore } from './src/store/settingsStore';
 import NotesListScreen from './src/screens/NotesListScreen';
 import NoteEditorScreen from './src/screens/NoteEditorScreen';
+import OnboardingScreen from './src/screens/OnboardingScreen';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -20,7 +21,7 @@ export default function App() {
   const editorOpacity = useRef(new Animated.Value(0)).current;
   
   const { fontsLoaded } = useFonts();
-  const { loadSettings, colorScheme } = useSettingsStore();
+  const { loadSettings, colorScheme, isFirstTime, completeOnboarding } = useSettingsStore();
 
   useEffect(() => {
     loadSettings();
@@ -80,40 +81,50 @@ export default function App() {
     });
   };
 
+  const handleOnboardingComplete = () => {
+    completeOnboarding();
+  };
+
   return (
     <>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <View style={{ flex: 1 }}>
-        {/* Notes List Screen */}
-        <Animated.View 
-          style={{ 
-            ...StyleSheet.absoluteFillObject,
-            opacity: listOpacity,
-            pointerEvents: currentScreen === 'list' ? 'auto' : 'none'
-          }}
-        >
-          <NotesListScreen
-            onNotePress={handleNotePress}
-            onNewNote={handleNewNote}
-          />
-        </Animated.View>
-
-        {/* Editor Screen */}
-        {currentNoteId && (
+      
+      {/* Show onboarding for first-time users */}
+      {isFirstTime ? (
+        <OnboardingScreen onComplete={handleOnboardingComplete} />
+      ) : (
+        <View style={{ flex: 1 }}>
+          {/* Notes List Screen */}
           <Animated.View 
             style={{ 
               ...StyleSheet.absoluteFillObject,
-              opacity: editorOpacity,
-              pointerEvents: currentScreen === 'editor' ? 'auto' : 'none'
+              opacity: listOpacity,
+              pointerEvents: currentScreen === 'list' ? 'auto' : 'none'
             }}
           >
-            <NoteEditorScreen
-              noteId={currentNoteId}
-              onBack={handleBack}
+            <NotesListScreen
+              onNotePress={handleNotePress}
+              onNewNote={handleNewNote}
             />
           </Animated.View>
-        )}
-      </View>
+
+          {/* Editor Screen */}
+          {currentNoteId && (
+            <Animated.View 
+              style={{ 
+                ...StyleSheet.absoluteFillObject,
+                opacity: editorOpacity,
+                pointerEvents: currentScreen === 'editor' ? 'auto' : 'none'
+              }}
+            >
+              <NoteEditorScreen
+                noteId={currentNoteId}
+                onBack={handleBack}
+              />
+            </Animated.View>
+          )}
+        </View>
+      )}
     </>
   );
 }

@@ -6,12 +6,14 @@ interface SettingsState {
   colorScheme: ColorScheme;
   fontSize: number;
   isLoading: boolean;
+  isFirstTime: boolean;
   
   // Actions
   setColorScheme: (scheme: ColorScheme) => Promise<void>;
   setFontSize: (size: number) => Promise<void>;
   loadSettings: () => Promise<void>;
   toggleTheme: () => Promise<void>;
+  completeOnboarding: () => Promise<void>;
 }
 
 const SETTINGS_KEY = 'calming-notes-settings';
@@ -20,6 +22,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   colorScheme: 'light',
   fontSize: 16,
   isLoading: false,
+  isFirstTime: true, // Default to first time until loaded
 
   setColorScheme: async (scheme: ColorScheme) => {
     set({ colorScheme: scheme });
@@ -50,6 +53,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         set({
           colorScheme: settings.colorScheme || 'light',
           fontSize: settings.fontSize || 16,
+          isFirstTime: settings.isFirstTime !== undefined ? settings.isFirstTime : true,
         });
       }
     } catch (error) {
@@ -63,5 +67,15 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const currentScheme = get().colorScheme;
     const newScheme = currentScheme === 'light' ? 'dark' : 'light';
     await get().setColorScheme(newScheme);
+  },
+
+  completeOnboarding: async () => {
+    set({ isFirstTime: false });
+    try {
+      const settings = { ...get(), isFirstTime: false };
+      await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch (error) {
+      console.error('Failed to save onboarding completion:', error);
+    }
   },
 }));
