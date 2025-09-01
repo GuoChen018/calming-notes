@@ -184,7 +184,6 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     <TouchableOpacity
       style={[styles.noteItem, { 
         backgroundColor: colors.background,
-        borderBottomColor: colors.border.light 
       }]}
       onPress={() => onNotePress(item.id)}
       onLongPress={() => handleDeleteNote(item.id, item.preview)}
@@ -492,6 +491,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 6,
+    borderBottomWidth: 1,
   },
   searchIcon: {
     marginRight: 12,
