@@ -6,6 +6,8 @@ interface NotesState {
   currentNote: Note | null;
   isLoading: boolean;
   error: string | null;
+  selectedNotes: string[]; // Array of selected note IDs
+  isSelectionMode: boolean;
   
   // Actions
   loadNotes: () => Promise<void>;
@@ -15,6 +17,12 @@ interface NotesState {
   deleteNote: (id: string) => Promise<void>;
   searchNotes: (query: string) => Promise<void>;
   clearError: () => void;
+  
+  // Selection actions
+  toggleNoteSelection: (noteId: string) => void;
+  selectNote: (noteId: string) => void;
+  clearSelection: () => void;
+  deleteSelectedNotes: () => Promise<void>;
 }
 
 export const useNotesStore = create<NotesState>((set, get) => ({
@@ -22,6 +30,8 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   currentNote: null,
   isLoading: true,
   error: null,
+  selectedNotes: [],
+  isSelectionMode: false,
 
   loadNotes: async () => {
     set({ isLoading: true, error: null });
@@ -130,4 +140,60 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   },
 
   clearError: () => set({ error: null }),
+
+  // Selection actions
+  toggleNoteSelection: (noteId: string) => {
+    const { selectedNotes } = get();
+    const isSelected = selectedNotes.includes(noteId);
+    
+    if (isSelected) {
+      const newSelection = selectedNotes.filter(id => id !== noteId);
+      set({ 
+        selectedNotes: newSelection,
+        isSelectionMode: newSelection.length > 0
+      });
+    } else {
+      set({ 
+        selectedNotes: [...selectedNotes, noteId],
+        isSelectionMode: true
+      });
+    }
+  },
+
+  selectNote: (noteId: string) => {
+    set({ 
+      selectedNotes: [noteId],
+      isSelectionMode: true
+    });
+  },
+
+  clearSelection: () => {
+    set({ 
+      selectedNotes: [],
+      isSelectionMode: false
+    });
+  },
+
+  deleteSelectedNotes: async () => {
+    const { selectedNotes } = get();
+    try {
+      // Delete all selected notes
+      await Promise.all(selectedNotes.map(noteId => db.deleteNote(noteId)));
+      
+      // Refresh notes list and clear selection
+      const notes = await db.getAllNotes();
+      set({ 
+        notes,
+        selectedNotes: [],
+        isSelectionMode: false
+      });
+      
+      return selectedNotes.length; // Return count for toast
+    } catch (error) {
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to delete notes'
+      });
+      throw error;
+    }
+  },
 }));

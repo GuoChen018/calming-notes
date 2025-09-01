@@ -10,6 +10,7 @@ import {
   RefreshControl,
   ScrollView,
   TouchableWithoutFeedback,
+  Animated,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -28,11 +29,17 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
     notes,
     isLoading,
     error,
+    selectedNotes,
+    isSelectionMode,
     loadNotes,
     createNote,
     deleteNote,
     searchNotes,
     clearError,
+    toggleNoteSelection,
+    selectNote,
+    clearSelection,
+    deleteSelectedNotes,
   } = useNotesStore();
 
   const { toggleTheme } = useSettingsStore();
@@ -42,6 +49,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   const [refreshing, setRefreshing] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const searchInputRef = useRef<TextInput>(null);
+  const selectionBarOpacity = useRef(new Animated.Value(0)).current;
   
   // Derive search mode from query - no separate state needed
   const isInSearchMode = searchQuery.trim().length > 0;
@@ -56,6 +64,15 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       setInitialLoad(false);
     });
   }, [loadNotes]);
+
+  // Animate selection bar
+  useEffect(() => {
+    Animated.timing(selectionBarOpacity, {
+      toValue: isSelectionMode ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isSelectionMode, selectionBarOpacity]);
 
 
 
@@ -75,6 +92,28 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       onNotePress(noteId);
     } catch (error) {
       Alert.alert('Error', 'Failed to create new note');
+    }
+  };
+
+  const handleNoteLongPress = (noteId: string) => {
+    selectNote(noteId);
+  };
+
+  const handleNotePress = (noteId: string) => {
+    if (isSelectionMode) {
+      toggleNoteSelection(noteId);
+    } else {
+      onNotePress(noteId);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      const deletedCount = await deleteSelectedNotes();
+      // TODO: Show toast with undo option
+      console.log(`${deletedCount} notes deleted`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete notes');
     }
   };
 
@@ -174,20 +213,57 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.background }]}>
-        <Text style={[styles.title, { 
-          fontFamily: typography.fonts.regular, 
-          color: colors.text.primary 
-        }]}>
-          Notes
-        </Text>
-        <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
-          <Icon 
-            name={isDark ? 'sun' : 'moon'} 
-            size={20} 
-            color={colors.text.secondary} 
-          />
-        </TouchableOpacity>
+      <View style={styles.headerContainer}>
+        {/* Normal Header */}
+        <Animated.View style={[
+          styles.header, 
+          { 
+            backgroundColor: colors.background,
+            opacity: Animated.subtract(1, selectionBarOpacity)
+          }
+        ]}>
+          <Text style={[styles.title, { 
+            fontFamily: typography.fonts.regular, 
+            color: colors.text.primary 
+          }]}>
+            Notes
+          </Text>
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeButton}>
+            <Icon 
+              name={isDark ? 'sun' : 'moon'} 
+              size={20} 
+              color={colors.text.secondary} 
+            />
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Selection Header */}
+        <Animated.View style={[
+          styles.selectionHeader,
+          { 
+            backgroundColor: colors.background,
+            opacity: selectionBarOpacity,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+          }
+        ]}>
+          <TouchableOpacity onPress={clearSelection} style={styles.closeButton}>
+            <Icon name="close" size={24} color={colors.text.primary} />
+          </TouchableOpacity>
+          
+          <Text style={[styles.selectionCount, { 
+            fontFamily: typography.fonts.regular, 
+            color: colors.text.primary 
+          }]}>
+            {selectedNotes.length} note{selectedNotes.length !== 1 ? 's' : ''} selected
+          </Text>
+          
+          <TouchableOpacity onPress={handleDeleteSelected} style={styles.deleteButton}>
+            <Icon name="trash" size={20} color={colors.accent.error} />
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
       {/* Search and Notes Container */}
@@ -227,17 +303,23 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           </TouchableWithoutFeedback>
 
           {/* Notes List */}
-          {notes.map((item, index) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[styles.noteItem, { 
-                backgroundColor: colors.background,
-                borderBottomColor: colors.border.light,
-                borderBottomWidth: index === notes.length - 1 ? 0 : 1,
-              }]}
-              onPress={() => onNotePress(item.id)}
-              onLongPress={() => handleDeleteNote(item.id, item.preview)}
-            >
+          {notes.map((item, index) => {
+            const isSelected = selectedNotes.includes(item.id);
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[
+                  styles.noteItem, 
+                  { 
+                    backgroundColor: isSelected ? colors.accent.primary + '20' : colors.background,
+                    borderBottomColor: colors.border.light,
+                    borderBottomWidth: index === notes.length - 1 ? 0 : 1,
+                  }
+                ]}
+                onPress={() => handleNotePress(item.id)}
+                onLongPress={() => handleNoteLongPress(item.id)}
+                delayLongPress={500}
+              >
               <View style={styles.noteContent}>
                 <Text style={[styles.notePreview, { 
                   color: colors.text.primary,
@@ -294,6 +376,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  headerContainer: {
+    position: 'relative',
+    zIndex: 10,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -301,6 +387,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 10,
+  },
+  selectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 10,
+  },
+  closeButton: {
+    padding: 8,
+  },
+  selectionCount: {
+    fontSize: 18,
+    flex: 1,
+    textAlign: 'center',
+  },
+  deleteButton: {
+    padding: 8,
   },
   scrollContainer: {
     flex: 1,
