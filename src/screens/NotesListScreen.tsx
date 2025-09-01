@@ -275,6 +275,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
             top: 0,
             left: 0,
             right: 0,
+            pointerEvents: isSelectionMode ? 'auto' : 'none', // Key fix!
           }
         ]}>
           <TouchableOpacity onPress={clearSelection} style={styles.closeButton}>
