@@ -454,6 +454,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 5,
     marginBottom: 20,
+    borderWidth: 1,
+    borderRadius: 8,
+    overflow: 'hidden', // Ensures content doesn't exceed rounded corners
   },
   themeButton: {
     padding: 8,
