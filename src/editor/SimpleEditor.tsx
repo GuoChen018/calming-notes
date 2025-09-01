@@ -146,6 +146,7 @@ export default function SimpleEditor({
             {
               fontFamily: typography.fonts.regular,
               fontSize: fontSize,
+              lineHeight: fontSize * 1.5, // Match notes list line height ratio
               color: colors.text.primary,
             }
           ]}
