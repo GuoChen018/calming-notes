@@ -377,11 +377,12 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       {/* Full Screen Empty State - only show when no notes and no search */}
       {notes.length === 0 && !searchQuery && (
         <View style={styles.fullScreenEmptyState}>
-                          <Icon 
-                  name={isDark ? 'icon-dark' : 'icon-light'}
-                  size={80}
-                  color={colors.text.primary}
-                />
+          <Icon 
+            name={isDark ? 'icon-dark' : 'icon-light'}
+            size={80}
+            color={colors.text.primary}
+            style={styles.appIcon}
+          />
           <Text style={[styles.emptyTitle, { 
             fontFamily: typography.fonts.regular,
             color: colors.text.primary 
