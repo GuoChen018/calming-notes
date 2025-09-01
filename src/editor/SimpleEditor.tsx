@@ -156,6 +156,7 @@ export default function SimpleEditor({
           multiline
           textAlignVertical="top"
           autoFocus
+          cursorColor={isDark ? '#ffffff' : '#121212'}
         />
       </ScrollView>
     </View>
