@@ -377,10 +377,10 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
       {/* Full Screen Empty State - only show when no notes and no search */}
       {notes.length === 0 && !searchQuery && (
         <View style={styles.fullScreenEmptyState}>
-          <Image 
-            source={isDark ? require('../../assets/app-icons/ios-dark.png') : require('../../assets/app-icons/ios-light.png')}
-            style={styles.appIcon}
-          />
+                          <Image 
+                  source={isDark ? require('../../assets/app-icons/splash-icon-dark.png') : require('../../assets/app-icons/splash-icon-light.png')}
+                  style={styles.appIcon}
+                />
           <Text style={[styles.emptyTitle, { 
             fontFamily: typography.fonts.regular,
             color: colors.text.primary 
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
   appIcon: {
     width: 120,
     height: 120,
-    marginBottom: 32,
+    marginBottom: 4,
   },
   emptyTitle: {
     fontSize: 24,
