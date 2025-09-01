@@ -379,7 +379,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
         <View style={styles.fullScreenEmptyState}>
                           <Icon 
                   name={isDark ? 'icon-dark' : 'icon-light'}
-                  size={120}
+                  size={80}
                   color={colors.text.primary}
                 />
           <Text style={[styles.emptyTitle, { 
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
   },
   appIcon: {
-    marginBottom: 32,
+    marginBottom: 48,
   },
   emptyTitle: {
     fontSize: 24,
