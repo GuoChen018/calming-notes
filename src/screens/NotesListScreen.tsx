@@ -11,6 +11,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Animated,
+  Pressable,
 } from 'react-native';
 import { useNotesStore } from '../store/notesStore';
 import { useSettingsStore } from '../store/settingsStore';
@@ -311,7 +312,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
             const isSelected = selectedNotes.includes(item.id);
             return (
               <React.Fragment key={item.id}>
-                <TouchableOpacity
+                <Pressable
                   style={[
                     styles.noteItem, 
                     { 
@@ -338,7 +339,7 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
                     {formatDate(item.updated_at)}
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
               {index < notes.length - 1 && (
                 <View style={[styles.noteSeparator, { backgroundColor: colors.border.light }]} />
               )}
