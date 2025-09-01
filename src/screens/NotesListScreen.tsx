@@ -548,9 +548,7 @@ const styles = StyleSheet.create({
     paddingVertical: 60,
   },
   appIcon: {
-    width: 120,
-    height: 120,
-    marginBottom: 4,
+    marginBottom: 32,
   },
   emptyTitle: {
     fontSize: 24,
