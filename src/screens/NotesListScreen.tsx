@@ -355,24 +355,32 @@ export default function NotesListScreen({ onNotePress, onNewNote }: NotesListScr
           
           {notes.length === 0 && (
             <View style={styles.emptyState}>
-              {searchQuery && (
+              {searchQuery ? (
                 <Icon 
                   name="cat" 
                   size={100} 
                   color="#A2ADC2" 
                 />
+              ) : (
+                <Image 
+                  source={isDark ? require('../../assets/app-icons/ios-dark.png') : require('../../assets/app-icons/ios-light.png')}
+                  style={styles.appIcon}
+                />
               )}
-              <Text style={[styles.emptyText, { 
+              <Text style={[styles.emptyTitle, { 
                 fontFamily: typography.fonts.regular,
-                color: colors.text.secondary 
+                color: colors.text.primary 
               }]}>
-                {searchQuery ? 'No notes found' : 'No notes yet'}
+                {searchQuery ? 'No notes found' : 'No notes created'}
               </Text>
-                          {!isInSearchMode && !isLoading && (
-              <TouchableOpacity style={[styles.createFirstButton, { backgroundColor: colors.accent.primary }]} onPress={handleNewNote}>
-                <Text style={[styles.createFirstButtonText, { fontFamily: typography.fonts.regular }]}>Create your first note</Text>
-              </TouchableOpacity>
-            )}
+              {!searchQuery && (
+                <Text style={[styles.emptySubtitle, { 
+                  fontFamily: typography.fonts.regular,
+                  color: colors.text.secondary 
+                }]}>
+                  Create your first note
+                </Text>
+              )}
             </View>
           )}
         </View>
